@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: pacome-database
+    restart: always
+    environment:
+      POSTGRES_DB: pacome
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - 5432:5432
