@@ -1,35 +1,34 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
+import { Args } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { UserInput } from './dto/index.input';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { LoginOutput } from '../auth/dto/index.output';
 
-@Resolver(() => User)
+@Resolver()
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
-
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
+  constructor(
+    private readonly service: UserService,
+    // private readonly utils: UtilsProvider,
+    @InjectDataSource() private readonly dataSource: DataSource,
+  ) {}
+  @Query(() => [User])
+  async users(@Args('user', { nullable: true }) user: UserInput) {
+    return this.service.findAll(user);
   }
 
-  @Query(() => [User], { name: 'user' })
-  findAll() {
-    return this.userService.findAll();
+  @Query(() => User, { nullable: true })
+  async user(@Args('where') where: UserInput) {
+    return this.service.findOne(where);
   }
 
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
-  }
-
-  @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
-  }
-
-  @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.remove(id);
+  @Mutation(() => LoginOutput, {
+    description:
+      'create or update depending if send id or not, if is create you need to send all entity fields without a id, if is update just is obligatory send the _id field',
+  })
+  async saveUser(@Args('user') user: UserInput): Promise<LoginOutput> {
+    return this.service.save(user);
   }
 }

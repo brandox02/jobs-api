@@ -7,10 +7,4 @@ import { Column, Entity } from 'typeorm';
 export class Department extends BaseEntity {
   @Column()
   name: string;
-
-  @Column()
-  sede: string;
-
-  @Column()
-  location: string;
 }

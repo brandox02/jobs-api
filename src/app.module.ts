@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './modules/database/database.module';
 import { RoleModule } from './modules/role/role.module';
 import { DepartmentModule } from './modules/department/department.module';
@@ -10,6 +10,7 @@ import { GraphqlModule } from './modules/graphql/graphql.module';
 import { OrderModule } from './modules/order/order.module';
 import { ClaimModule } from './modules/claim/claim.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MenuModule } from './modules/menu/menu.module';
     }),
     GraphqlModule,
     DatabaseModule,
+    AuthModule,
     RoleModule,
     CompanyModule,
     DepartmentModule,

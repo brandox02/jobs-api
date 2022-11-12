@@ -18,7 +18,7 @@ export class Order extends BaseEntity {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @ManyToOne((_) => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

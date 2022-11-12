@@ -13,7 +13,7 @@ export class User extends BaseEntity {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ default: true })
   enabled: boolean;
 
   @Column()
@@ -21,6 +21,9 @@ export class User extends BaseEntity {
 
   @Column()
   email: string;
+
+  @Column()
+  password: string;
 
   @Column({ name: 'company_id' })
   companyId: number;
