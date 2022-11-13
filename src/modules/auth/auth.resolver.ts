@@ -1,8 +1,8 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { UserInput } from '../user/dto/index.input';
 import { AuthService } from './auth.service';
-import { GetUserInfo, LoginOutput } from './dto/index.output';
+import { LoginOutput } from './dto/index.output';
 import { isPublicResolver } from './jwtStratedy.guard';
 
 @Resolver('auth')
@@ -22,7 +22,7 @@ export class AuthResolver {
       throw new UnauthorizedException();
     }
 
-    const response = this.authService.login(user);
+    const response = await this.authService.login(user);
 
     return response;
   }
@@ -31,10 +31,5 @@ export class AuthResolver {
   @isPublicResolver()
   async signin(@Args('user') userInput: UserInput) {
     return this.authService.signin(userInput);
-  }
-
-  @Query(() => GetUserInfo)
-  getUserInfo(@Context() context: any): GetUserInfo {
-    return context.req.user;
   }
 }

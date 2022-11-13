@@ -16,26 +16,30 @@ export class User extends BaseEntity {
   @Column({ default: true })
   enabled: boolean;
 
-  @Column()
+  @Column({ unique: true })
   cedula: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
+  public get fullname(): string {
+    return `${this.firstname} ${this.lastname}`;
+  }
+
   @Column({ name: 'company_id' })
   companyId: number;
 
-  @ManyToOne((_) => Company)
+  @ManyToOne(() => Company)
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
   @Column({ name: 'department_id' })
   departmentId: number;
 
-  @ManyToOne((_) => Department)
+  @ManyToOne(() => Department)
   @JoinColumn({ name: 'department_id' })
   department: Department;
 }

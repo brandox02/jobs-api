@@ -41,6 +41,10 @@ export class UserService {
         order: {
           createdAt: 'ASC',
         },
+        relations: {
+          department: true,
+          company: true,
+        },
       });
 
       if (!user) {

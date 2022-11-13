@@ -3,6 +3,7 @@ import { CompanyService } from './company.service';
 import { Company } from './entities/company.entity';
 
 import { CompanytWhereInput } from './dto/index.input';
+import { isPublicResolver } from '../auth/jwtStratedy.guard';
 
 @Resolver(() => Company)
 export class CompanyResolver {
@@ -14,7 +15,7 @@ export class CompanyResolver {
   // ) {
   //   return this.companyService.create(createCompanyInput);
   // }
-
+  @isPublicResolver()
   @Query(() => [Company], { name: 'companiesAll' })
   findAll(
     @Args('where', { nullable: true }) where: CompanytWhereInput,

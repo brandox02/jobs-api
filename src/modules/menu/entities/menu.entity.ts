@@ -9,7 +9,7 @@ export class Menu extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ precision: 10, scale: 2, type: 'decimal', name: 'day_dish_price' })
+  @Column({ precision: 10, scale: 2, type: 'decimal', name: 'day_dish_price', nullable: true })
   dayDishPrice: number;
 
   @Column({ type: 'jsonb' })

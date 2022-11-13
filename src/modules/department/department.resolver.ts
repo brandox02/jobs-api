@@ -1,4 +1,5 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
+import { isPublicResolver } from '../auth/jwtStratedy.guard';
 import { DepartmentService } from './department.service';
 import { DepartmentWhereInput } from './dto/index.input';
 import { Department } from './entities/department.entity';
@@ -13,7 +14,7 @@ export class DepartmentResolver {
   // ) {
   //   return this.departmentService.create(createDepartmentInput);
   // }
-
+  @isPublicResolver()
   @Query(() => [Department], { name: 'departmentsAll' })
   findAll(
     @Args('where', { nullable: true }) where: DepartmentWhereInput,
