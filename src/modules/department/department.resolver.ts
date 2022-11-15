@@ -15,7 +15,7 @@ export class DepartmentResolver {
   //   return this.departmentService.create(createDepartmentInput);
   // }
   @isPublicResolver()
-  @Query(() => [Department], { name: 'departmentsAll' })
+  @Query(() => [Department], { name: 'departmentList' })
   findAll(
     @Args('where', { nullable: true }) where: DepartmentWhereInput,
   ): Promise<Department[]> {

@@ -11,6 +11,7 @@ import { OrderModule } from './modules/order/order.module';
 import { ClaimModule } from './modules/claim/claim.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { GeneralParameterModule } from './modules/general-parameter/general-parameter.module';
 
 @Module({
   imports: [
@@ -25,10 +26,10 @@ import { AuthModule } from './modules/auth/auth.module';
     DepartmentModule,
     UserModule,
     RequestModule,
-    GraphqlModule,
     OrderModule,
     ClaimModule,
     MenuModule,
+    GeneralParameterModule,
   ],
   controllers: [],
   providers: [],

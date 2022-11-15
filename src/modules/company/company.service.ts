@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindAllInput } from 'src/common/FindAllInput';
+import { FindAllInput } from 'src/common/FindAllInput.input';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { CompanytWhereInput } from './dto/index.input';
 import { Company } from './entities/company.entity';
 
 @Injectable()
@@ -21,13 +22,17 @@ export class CompanyService {
   //   return await this.repo.find({ where });
   // }
 
-  async find({ skip, take, where }: FindAllInput<Company>): Promise<Company[]> {
-    return await this.repo.find({
-      where: this.utils.removeNullFields(where),
-      skip,
-      take,
-    });
-  }
+  // async find({
+  //   skip,
+  //   take,
+  //   where,
+  // }: FindAllInput<CompanytWhereInput>): Promise<Company[]> {
+  //   return await this.repo.find({
+  //     where: this.utils.removeNullFields(where),
+  //     skip,
+  //     take,
+  //   });
+  // }
 
   async findAll(where: FindOptionsWhere<Company> = {}): Promise<Company[]> {
     return await this.repo.find({ where });

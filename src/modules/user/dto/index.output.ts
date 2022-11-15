@@ -4,6 +4,7 @@ import { Department } from 'src/modules/department/entities/department.entity';
 
 @ObjectType()
 export class GetUserInfo {
+  id: number;
   firstname: string;
 
   lastname: string;

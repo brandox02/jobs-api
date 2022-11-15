@@ -1,7 +1,8 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
+import { OrderWhereInput } from './dto/order-where.input';
 import { UpdateOrderInput } from './dto/update-order.input';
 
 @Resolver(() => Order)
@@ -9,27 +10,42 @@ export class OrderResolver {
   constructor(private readonly orderService: OrderService) {}
 
   @Mutation(() => Order)
-  createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {
+  async createOrder(
+    @Args('input') createOrderInput: CreateOrderInput,
+  ): Promise<Order> {
     return this.orderService.create(createOrderInput);
   }
 
-  @Query(() => [Order], { name: 'order' })
-  findAll() {
-    return this.orderService.findAll();
+  @Query(() => [Order])
+  async orderList(
+    @Args('where', { defaultValue: {} }) where: OrderWhereInput,
+  ): Promise<Order[]> {
+    return this.orderService.findAll(where);
   }
 
-  @Query(() => Order, { name: 'order' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.orderService.findOne(id);
+  @Query(() => Order)
+  async order(@Args('where') where: OrderWhereInput): Promise<Order> {
+    return this.orderService.findOne(where);
+  }
+
+  @Query(() => [Order])
+  async orders(
+    @Args('page', { defaultValue: 1 }) page: number,
+    @Args('perPage', { defaultValue: 12 }) perPage: number,
+    @Args('where', { defaultValue: {} }) where: OrderWhereInput,
+  ): Promise<Order[]> {
+    return this.orderService.find({
+      page,
+      perPage,
+      where,
+      order: { id: 'DESC' },
+    });
   }
 
   @Mutation(() => Order)
-  updateOrder(@Args('updateOrderInput') updateOrderInput: UpdateOrderInput) {
-    return this.orderService.update(updateOrderInput.id, updateOrderInput);
-  }
-
-  @Mutation(() => Order)
-  removeOrder(@Args('id', { type: () => Int }) id: number) {
-    return this.orderService.remove(id);
+  async updateOrder(
+    @Args('input') updateOrderInput: UpdateOrderInput,
+  ): Promise<Order> {
+    return this.orderService.update(updateOrderInput);
   }
 }

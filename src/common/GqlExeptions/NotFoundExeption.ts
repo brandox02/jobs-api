@@ -1,8 +1,8 @@
-import { GraphQLError } from "graphql";
-import { HttpStatus } from "@nestjs/common";
+import { GraphQLError } from 'graphql';
+import { HttpStatus } from '@nestjs/common';
 
-export const NotFoundException = () =>
-  new GraphQLError("Resource not found", {
+export const NotFoundException = (resource = 'Resource') =>
+  new GraphQLError(`${resource} not found`, {
     extensions: {
       exception: {
         code: HttpStatus.NOT_FOUND.toString(),

@@ -25,10 +25,6 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  public get fullname(): string {
-    return `${this.firstname} ${this.lastname}`;
-  }
-
   @Column({ name: 'company_id' })
   companyId: number;
 

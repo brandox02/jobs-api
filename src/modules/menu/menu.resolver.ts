@@ -12,7 +12,7 @@ export class MenuResolver {
   //   return this.menuService.create(createMenuInput);
   // }
 
-  @Query(() => [Menu], { name: 'menusAll' })
+  @Query(() => [Menu], { name: 'menuListl' })
   findAll(
     @Args('where', { nullable: true }) where: MenuWhereInput,
   ): Promise<Menu[]> {

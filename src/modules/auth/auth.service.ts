@@ -34,6 +34,7 @@ export class AuthService {
 
   async getToken(inputUser: AuthenticatedUser) {
     const user = await this.userService.findOne({ id: inputUser.id });
+    console.log(user);
     const accessToken = this.jwtService.sign(JSON.stringify(user));
     return {
       accessToken,

@@ -16,7 +16,7 @@ export class CompanyResolver {
   //   return this.companyService.create(createCompanyInput);
   // }
   @isPublicResolver()
-  @Query(() => [Company], { name: 'companiesAll' })
+  @Query(() => [Company], { name: 'companyList' })
   findAll(
     @Args('where', { nullable: true }) where: CompanytWhereInput,
   ): Promise<Company[]> {
