@@ -1,8 +1,7 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Args } from '@nestjs/graphql';
 import { GeneralParameterService } from './general-parameter.service';
 import { GeneralParameter } from './entities/general-parameter.entity';
-import { CreateGeneralParameterInput } from './dto/create-general-parameter.input';
-import { UpdateGeneralParameterInput } from './dto/update-general-parameter.input';
+import { GeneralParameterWhereInput } from './dto/general-paremeter-where.input';
 
 @Resolver(() => GeneralParameter)
 export class GeneralParameterResolver {
@@ -10,6 +9,19 @@ export class GeneralParameterResolver {
     private readonly generalParameterService: GeneralParameterService,
   ) {}
 
+  @Query(() => GeneralParameter)
+  async generalParameter(
+    @Args('where') where: GeneralParameterWhereInput,
+  ): Promise<GeneralParameter> {
+    return this.generalParameterService.findOne(where);
+  }
+
+  @Query(() => [GeneralParameter])
+  async generalParameterList(
+    @Args('where', { defaultValue: {} }) where: GeneralParameterWhereInput,
+  ): Promise<GeneralParameter[]> {
+    return this.generalParameterService.findAll(where);
+  }
   // @Mutation(() => GeneralParameter)
   // createGeneralParameter(@Args('createGeneralParameterInput') createGeneralParameterInput: CreateGeneralParameterInput) {
   //   return this.generalParameterService.create(createGeneralParameterInput);

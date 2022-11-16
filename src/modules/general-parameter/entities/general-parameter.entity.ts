@@ -9,4 +9,6 @@ export class GeneralParameter extends BaseEntity {
   name: string;
   @Column()
   value: string;
+  @Column({ nullable: true })
+  description: string;
 }

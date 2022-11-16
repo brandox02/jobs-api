@@ -1,4 +1,11 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  Context,
+  Float,
+} from '@nestjs/graphql';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
@@ -47,5 +54,10 @@ export class OrderResolver {
     @Args('input') updateOrderInput: UpdateOrderInput,
   ): Promise<Order> {
     return this.orderService.update(updateOrderInput);
+  }
+
+  @Query(() => Float)
+  async moneyAccumulatedMonth(@Context() context: any): Promise<number> {
+    return this.orderService.moneyAccumulatedMonth(context.req.user.id);
   }
 }

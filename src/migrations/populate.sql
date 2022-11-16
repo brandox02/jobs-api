@@ -24,3 +24,6 @@ INSERT INTO order_types(id,name) VALUES
 (3, 'Desayunos'),
 (4, 'Repostería'),
 (5, 'Panadería');
+
+INSERT INTO general_parameters(id, name, value, description) VALUES(1, 'Tiempo de confimación de order', '15', '');
+INSERT INTO general_parameters(id, name, value, description) VALUES(2, 'Hora limite para ordenar', '10', '');

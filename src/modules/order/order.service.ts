@@ -5,16 +5,19 @@ import { FindAllInput } from 'src/common/FindAllInput.input';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import {
+  Between,
   DataSource,
   EntityManager,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
+import { GeneralParameter } from '../general-parameter/entities/general-parameter.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { OrderWhereInput } from './dto/order-where.input';
 import { UpdateOrderInput } from './dto/update-order.input';
 import { Order } from './entities/order.entity';
+import { omit } from 'lodash';
 
 @Injectable()
 export class OrderService {
@@ -32,6 +35,20 @@ export class OrderService {
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
+  async trigger(order: { id?: number; statusId?: number }) {
+    if (order.statusId === 2) {
+      const parameter = await this.dataSource
+        .getRepository(GeneralParameter)
+        .findOne({ where: { id: 1 } });
+      const minutes = parseInt(parameter.value);
+      const timeInMilliseconds = minutes * 60000;
+      await this.repo.update({ id: order.id }, { createdAt: dayjs().toDate() });
+      setTimeout(async () => {
+        await this.repo.update({ id: order.id }, { statusId: 3 });
+      }, timeInMilliseconds);
+    }
+  }
+
   async create(orderInput: CreateOrderInput): Promise<Order> {
     const orderInputCopy = {
       ...orderInput,
@@ -40,13 +57,30 @@ export class OrderService {
     };
 
     const order = await this.repo.save(this.repo.create(orderInputCopy));
-
+    this.trigger(order);
     return order;
   }
 
   async findAll(where: FindOptionsWhere<Order> = {}): Promise<Order[]> {
-    return await this.repo.find({
-      where,
+    let copyWhere: any = { ...where };
+
+    if (copyWhere?.fromDate && copyWhere?.toDate) {
+      copyWhere.toDate = dayjs(copyWhere.toDate).add(1, 'days').toDate();
+      copyWhere[
+        copyWhere?.filterDateByDelivered ? 'deliverDate' : 'createdAt'
+      ] = Between(copyWhere.fromDate, copyWhere.toDate);
+
+      copyWhere = omit(copyWhere, [
+        'fromDate',
+        'toDate',
+        'filterDateByDelivered',
+      ]);
+
+      delete copyWhere.filterDateByDelivered;
+    }
+
+    return this.repo.find({
+      where: this.utils.removeNullFields(copyWhere),
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
@@ -75,8 +109,24 @@ export class OrderService {
     where,
     order,
   }: FindAllInput<OrderWhereInput>): Promise<Order[]> {
+    let copyWhere: any = { ...where };
+
+    if (copyWhere?.fromDate && copyWhere?.toDate) {
+      copyWhere.toDate = dayjs(copyWhere.toDate).add(1, 'days').toDate();
+      copyWhere[
+        copyWhere?.filterDateByDelivered ? 'deliverDate' : 'createdAt'
+      ] = Between(copyWhere.fromDate, copyWhere.toDate);
+
+      copyWhere = omit(copyWhere, [
+        'fromDate',
+        'toDate',
+        'filterDateByDelivered',
+      ]);
+
+      delete copyWhere.filterDateByDelivered;
+    }
     return this.repo.find({
-      where: this.utils.removeNullFields(where),
+      where: this.utils.removeNullFields(copyWhere),
       skip: perPage * page,
       take: perPage,
       relations: this.relations,
@@ -85,15 +135,30 @@ export class OrderService {
   }
 
   async update(orderInput: UpdateOrderInput): Promise<Order> {
-    setTimeout(() => {
-      console.log('klk bro');
-    }, 5000);
-
     await this.dataSource.transaction(async (txn: EntityManager) => {
       const repo = txn.getRepository(Order);
       await repo.save(this.repo.create(orderInput), { transaction: true });
+
+      this.trigger(orderInput);
     });
     return this.findOne({ id: orderInput.id });
+  }
+
+  async moneyAccumulatedMonth(userId: number) {
+    const month: number = dayjs().get('month') + 1;
+    const orders = await this.repo
+      .createQueryBuilder('order')
+      .where(
+        'extract(month from order.created_at) = :month and order.user_id = :userId and status_id = :statusId',
+        { month, userId, statusId: 4 },
+      )
+      .getMany();
+    const sum = orders.reduce(
+      (acc, curr) => acc + parseFloat(curr.total.toString()),
+      0,
+    );
+
+    return sum;
   }
 
   private async generateNoOrder(userId: number): Promise<string> {

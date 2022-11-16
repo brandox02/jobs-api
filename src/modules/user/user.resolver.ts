@@ -3,6 +3,8 @@ import { UserService } from './user.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { GetUserInfo } from './dto/index.output';
+import { Order } from '../order/entities/order.entity';
+import * as dayjs from 'dayjs';
 
 @Resolver()
 export class UserResolver {
@@ -13,7 +15,10 @@ export class UserResolver {
   ) {}
 
   @Query(() => GetUserInfo)
-  getUserInfo(@Context() context: any): GetUserInfo {
+  async getUserInfo(@Context() context: any): Promise<GetUserInfo> {
+    await this.dataSource
+      .getRepository(Order)
+      .update({ id: 84 }, { createdAt: dayjs().add(2, 'minutes').toDate() });
     return context.req.user;
   }
   // @Query(() => [User])
