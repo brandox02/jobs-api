@@ -6,11 +6,12 @@ import {
   Context,
   Float,
 } from '@nestjs/graphql';
-import { OrderService } from './order.service';
+import { OrderService, Paginate } from './order.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { OrderWhereInput } from './dto/order-where.input';
 import { UpdateOrderInput } from './dto/update-order.input';
+import { PaginatedOrder } from './dto/paginated-order.output';
 
 @Resolver(() => Order)
 export class OrderResolver {
@@ -35,12 +36,12 @@ export class OrderResolver {
     return this.orderService.findOne(where);
   }
 
-  @Query(() => [Order])
+  @Query(() => PaginatedOrder)
   async orders(
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('perPage', { defaultValue: 12 }) perPage: number,
     @Args('where', { defaultValue: {} }) where: OrderWhereInput,
-  ): Promise<Order[]> {
+  ): Promise<Paginate<Order>> {
     return this.orderService.find({
       page,
       perPage,

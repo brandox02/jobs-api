@@ -50,8 +50,8 @@ export class Order extends BaseEntity {
   @Column({ name: 'type_id' })
   typeId: number;
 
-  @ManyToOne(() => OrderStatus)
-  @JoinColumn({ name: 'status_id' })
+  @ManyToOne(() => OrderType)
+  @JoinColumn({ name: 'type_id' })
   type?: OrderType;
 
   @OneToMany(() => OrderDetail, (d) => d.order, {

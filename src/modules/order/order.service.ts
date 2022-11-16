@@ -19,6 +19,15 @@ import { UpdateOrderInput } from './dto/update-order.input';
 import { Order } from './entities/order.entity';
 import { omit } from 'lodash';
 
+export interface Paginate<T> {
+  items: T[];
+  metadata: {
+    totalItems: number;
+    perPage: number;
+    totalPages: number;
+  };
+}
+
 @Injectable()
 export class OrderService {
   private readonly relations = [
@@ -27,6 +36,7 @@ export class OrderService {
     'user.company',
     'user.department',
     'status',
+    'type',
   ];
   constructor(
     @InjectRepository(Order) private readonly repo: Repository<Order>,
@@ -108,7 +118,7 @@ export class OrderService {
     perPage,
     where,
     order,
-  }: FindAllInput<OrderWhereInput>): Promise<Order[]> {
+  }: FindAllInput<OrderWhereInput>): Promise<Paginate<Order>> {
     let copyWhere: any = { ...where };
 
     if (copyWhere?.fromDate && copyWhere?.toDate) {
@@ -125,13 +135,24 @@ export class OrderService {
 
       delete copyWhere.filterDateByDelivered;
     }
-    return this.repo.find({
+
+    const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
-      skip: perPage * page,
-      take: perPage,
-      relations: this.relations,
-      order,
     });
+    return {
+      items: await this.repo.find({
+        where: this.utils.removeNullFields(copyWhere),
+        skip: perPage * page,
+        take: perPage,
+        relations: this.relations,
+        order,
+      }),
+      metadata: {
+        perPage,
+        totalItems,
+        totalPages: Math.ceil(totalItems / perPage),
+      },
+    };
   }
 
   async update(orderInput: UpdateOrderInput): Promise<Order> {
