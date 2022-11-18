@@ -18,6 +18,9 @@ import { ConfigService } from '@nestjs/config';
           synchronize: !isProd,
           autoLoadEntities: true,
           entities: ['dist/**/**.entity{.ts,.js}'],
+          ...(configService.get('DB_LOGGING') === 'true'
+            ? { logging: true }
+            : {}),
         };
       },
     }),

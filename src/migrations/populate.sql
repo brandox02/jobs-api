@@ -10,11 +10,12 @@ INSERT INTO companies(id, name,sede,location,acronym) VALUES
 
 INSERT INTO departments(id, name) VALUES (1,'Plataformas y servicios');
 
-INSERT INTO order_status(id,name) VALUES(1,'En Carrito');
-INSERT INTO order_status(id,name) VALUES(2,'Ordenada');
-INSERT INTO order_status(id,name) VALUES(3,'Confimada');
-INSERT INTO order_status(id,name) VALUES(4,'Entregada');
-INSERT INTO order_status(id,name) VALUES(5,'Cancelada');
+INSERT INTO order_status(id,name) VALUES
+(1,'En Carrito'),
+(2,'Ordenada'),
+(3,'Confimada'),
+(4,'Entregada'),
+(5,'Cancelada');
 
 
 
@@ -25,6 +26,7 @@ INSERT INTO order_types(id,name) VALUES
 (4, 'Repostería'),
 (5, 'Panadería');
 
-INSERT INTO general_parameters(id, name, value, description) VALUES(1, 'Tiempo de confimación de order', '15', '');
-INSERT INTO general_parameters(id, name, value, description) VALUES(2, 'Hora limite para ordenar', '10', '');
-INSERT INTO general_parameters(id, name, value, description) VALUES(3, 'Precio plato del dia', '150', '');
+INSERT INTO general_parameters(id, name, value, description) VALUES
+(1, 'Tiempo de confimación de order', '15', ''),
+(2, 'Hora limite para ordenar', '10', ''),
+(3, 'Precio plato del dia', '150', '');
