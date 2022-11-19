@@ -1,16 +1,11 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { MenuService } from './menu.service';
 import { Menu } from './entities/menu.entity';
-import { MenuWhereInput } from './dto/index.input';
+import { MenuWhereInput, UpdateMenuInput } from './dto/index.input';
 
 @Resolver()
 export class MenuResolver {
   constructor(private readonly menuService: MenuService) {}
-
-  // @Mutation(() => Menu)
-  // createMenu(@Args('createMenuInput') createMenuInput: CreateMenuInput) {
-  //   return this.menuService.create(createMenuInput);
-  // }
 
   @Query(() => [Menu], { name: 'menuListl' })
   findAll(
@@ -19,18 +14,13 @@ export class MenuResolver {
     return this.menuService.findAll(where);
   }
 
-  // @Query(() => Menu, { name: 'menu' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.menuService.findOne(id);
-  // }
+  @Mutation(() => Menu)
+  async updateMenu(@Args('input') input: UpdateMenuInput): Promise<Menu> {
+    return this.menuService.update(input);
+  }
 
-  // @Mutation(() => Menu)
-  // updateMenu(@Args('updateMenuInput') updateMenuInput: UpdateMenuInput) {
-  //   return this.menuService.update(updateMenuInput.id, updateMenuInput);
-  // }
-
-  // @Mutation(() => Menu)
-  // removeMenu(@Args('id', { type: () => Int }) id: number) {
-  //   return this.menuService.remove(id);
-  // }
+  @Query(() => Menu)
+  async menu(@Args('where') where: MenuWhereInput): Promise<Menu> {
+    return this.menuService.findOne(where);
+  }
 }

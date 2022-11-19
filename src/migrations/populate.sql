@@ -30,3 +30,6 @@ INSERT INTO general_parameters(id, name, value, description) VALUES
 (1, 'Tiempo de confimación de order', '15', ''),
 (2, 'Hora limite para ordenar', '10', ''),
 (3, 'Precio plato del dia', '150', '');
+
+
+INSERT INTO menus(id, name, json) values (1, 'Plato del dia','{"typeId": 1, "items": []}');

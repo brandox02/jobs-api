@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindAllInput } from 'src/common/FindAllInput.input';
+import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { MenuWhereInput } from './dto/index.input';
+import { UpdateMenuInput } from './dto/index.input';
 import { Menu } from './entities/menu.entity';
 
 @Injectable()
@@ -12,35 +12,29 @@ export class MenuService {
     @InjectRepository(Menu) private readonly repo: Repository<Menu>,
     private readonly utils: UtilsProvider,
   ) {}
-  // create(createMenuInput: CreateMenuInput) {
-  //   return 'This action adds a new menu';
-  // }
+
+  async findOne(where: FindOptionsWhere<Menu>): Promise<Menu> {
+    const withoutNull = this.utils.removeNullFields(where);
+    if (!where || Object.keys(withoutNull).length == 0) {
+      throw NotFoundException('Menu');
+    }
+
+    const item = await this.repo.findOne({
+      where: withoutNull,
+    });
+
+    if (!item) {
+      throw NotFoundException('Menu');
+    }
+    return item;
+  }
 
   async findAll(where: FindOptionsWhere<Menu> = {}): Promise<Menu[]> {
     return await this.repo.find({ where });
   }
 
-  // async find({
-  //   skip,
-  //   take,
-  //   where,
-  // }: FindAllInput<MenuWhereInput>): Promise<Menu[]> {
-  //   return await this.repo.find({
-  //     where: this.utils.removeNullFields(where),
-  //     skip,
-  //     take,
-  //   });
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} menu`;
-  // }
-
-  // update(id: number, updateMenuInput: UpdateMenuInput) {
-  //   return `This action updates a #${id} menu`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} menu`;
-  // }
+  async update(orderInput: UpdateMenuInput): Promise<Menu> {
+    await this.repo.save(this.repo.create(orderInput));
+    return this.findOne({ id: orderInput.id });
+  }
 }
