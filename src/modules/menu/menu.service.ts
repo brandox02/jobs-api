@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
-import { FindOptionsWhere, Repository } from 'typeorm';
-import { UpdateMenuInput } from './dto/index.input';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { CreateMenuInput, UpdateMenuInput } from './dto/index.input';
 import { Menu } from './entities/menu.entity';
 
 @Injectable()
 export class MenuService {
   constructor(
     @InjectRepository(Menu) private readonly repo: Repository<Menu>,
+    @InjectDataSource() private readonly dataSource: DataSource,
     private readonly utils: UtilsProvider,
   ) {}
 
@@ -30,11 +31,28 @@ export class MenuService {
   }
 
   async findAll(where: FindOptionsWhere<Menu> = {}): Promise<Menu[]> {
-    return await this.repo.find({ where });
+    return this.repo.find({ where, order: { id: 'ASC' } });
   }
 
-  async update(orderInput: UpdateMenuInput): Promise<Menu> {
-    await this.repo.save(this.repo.create(orderInput));
-    return this.findOne({ id: orderInput.id });
+  async update(input: UpdateMenuInput): Promise<Menu> {
+    await this.repo.save(this.repo.create(input));
+    return this.findOne({ id: input.id });
+  }
+
+  async create(input: CreateMenuInput): Promise<Menu> {
+    return this.dataSource.transaction(async (transaction) => {
+      const repo = transaction.getRepository(Menu);
+      const menu = await repo.save(this.repo.create(input));
+      const newJson = { ...menu.json, typeId: menu.id };
+      await repo.update({ id: menu.id }, { json: newJson });
+      return repo.findOne({ where: { id: menu.id } });
+    });
+  }
+
+  async delete(id: number): Promise<Menu> {
+    const item = await this.repo.findOne({ where: { id } });
+    await this.repo.delete({ id });
+
+    return item;
   }
 }

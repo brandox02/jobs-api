@@ -28,7 +28,6 @@ export class OrderResolver {
   async orderList(
     @Args('where', { defaultValue: {} }) where: OrderWhereInput,
   ): Promise<Order[]> {
-    console.log(where);
     return this.orderService.findAll(where);
   }
 

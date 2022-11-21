@@ -1,5 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
+import { Menu } from 'src/modules/menu/entities/menu.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { OrderDetail } from './order-detail.entity';
@@ -50,9 +51,9 @@ export class Order extends BaseEntity {
   @Column({ name: 'type_id' })
   typeId: number;
 
-  @ManyToOne(() => OrderType)
+  @ManyToOne(() => Menu)
   @JoinColumn({ name: 'type_id' })
-  type?: OrderType;
+  type?: Menu;
 
   @OneToMany(() => OrderDetail, (d) => d.order, {
     cascade: true,

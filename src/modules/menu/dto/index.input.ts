@@ -15,3 +15,10 @@ export class UpdateMenuInput {
   @Field(() => GraphQLJSON)
   json?: typeof GraphQLJSON;
 }
+
+@InputType()
+export class CreateMenuInput {
+  name: string;
+  @Field(() => GraphQLJSON)
+  json: typeof GraphQLJSON;
+}
