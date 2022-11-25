@@ -1,4 +1,4 @@
-import { isNil, omit, omitBy } from 'lodash';
+import { isEmpty, isNil, omit, omitBy } from 'lodash';
 import { DataSource, EntityManager } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
@@ -68,7 +68,7 @@ export class UtilsProvider {
     ];
   }
 
-  removeNullFields<T>(obj: any): Partial<T> {
+  removeNullFields(obj: any) {
     return omitBy(obj, isNil);
   }
 

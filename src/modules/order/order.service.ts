@@ -9,6 +9,8 @@ import {
   DataSource,
   EntityManager,
   FindOptionsWhere,
+  ILike,
+  In,
   Repository,
 } from 'typeorm';
 import { GeneralParameter } from '../general-parameter/entities/general-parameter.entity';
@@ -54,7 +56,15 @@ export class OrderService {
       const timeInMilliseconds = minutes * 60000;
       await this.repo.update({ id: order.id }, { createdAt: dayjs().toDate() });
       setTimeout(async () => {
-        await this.repo.update({ id: order.id }, { statusId: 3 });
+        const orderResult = await this.repo.findOne({
+          where: { id: order.id },
+        });
+        // it is for not update if the order was canceled in the timeout process queque
+        if (orderResult.statusId === 2) {
+          await this.repo.update({ id: order.id }, { statusId: 3 });
+        } else {
+          console.log(`Order ${order.id} was cancelled`);
+        }
       }, timeInMilliseconds);
     }
   }
@@ -71,11 +81,19 @@ export class OrderService {
     return order;
   }
 
-  async findAll(where: FindOptionsWhere<Order> = {}): Promise<Order[]> {
+  async findAll(where: OrderWhereInput = {}): Promise<Order[]> {
     let copyWhere: any = { ...where };
 
+    const serverMinutesDiff = new Date().getTimezoneOffset();
     if (copyWhere?.fromDate && copyWhere?.toDate) {
-      copyWhere.toDate = dayjs(copyWhere.toDate).add(1, 'days').toDate();
+      copyWhere.fromDate = dayjs(copyWhere.fromDate)
+        .subtract(serverMinutesDiff, 'minutes')
+        .toDate();
+      copyWhere.toDate = dayjs(copyWhere.toDate)
+        .add(serverMinutesDiff, 'minutes')
+        .add(1, 'day')
+        .toDate();
+
       copyWhere[
         copyWhere?.filterDateByDelivered ? 'deliverDate' : 'createdAt'
       ] = Between(copyWhere.fromDate, copyWhere.toDate);
@@ -89,11 +107,18 @@ export class OrderService {
       delete copyWhere.filterDateByDelivered;
     }
 
-    return this.repo.find({
+    if ('statusIds' in copyWhere) {
+      copyWhere.statusId = In(copyWhere.statusIds);
+      delete copyWhere.statusIds;
+    }
+
+    const items = await this.repo.find({
       where: this.utils.removeNullFields(copyWhere),
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
+
+    return items;
   }
 
   async findOne(where: FindOptionsWhere<Order>): Promise<Order> {
@@ -120,9 +145,15 @@ export class OrderService {
     order,
   }: FindAllInput<OrderWhereInput>): Promise<Paginate<Order>> {
     let copyWhere: any = { ...where };
-
+    const serverMinutesDiff = new Date().getTimezoneOffset();
     if (copyWhere?.fromDate && copyWhere?.toDate) {
-      copyWhere.toDate = dayjs(copyWhere.toDate).add(1, 'days').toDate();
+      copyWhere.fromDate = dayjs(copyWhere.fromDate)
+        .subtract(serverMinutesDiff, 'minutes')
+        .toDate();
+      copyWhere.toDate = dayjs(copyWhere.toDate)
+        .add(serverMinutesDiff, 'minutes')
+        .add(1, 'day')
+        .toDate();
       copyWhere[
         copyWhere?.filterDateByDelivered ? 'deliverDate' : 'createdAt'
       ] = Between(copyWhere.fromDate, copyWhere.toDate);
@@ -133,12 +164,22 @@ export class OrderService {
         'filterDateByDelivered',
       ]);
 
-      delete copyWhere.filterDateByDelivered;
+      // delete copyWhere.filterDateByDelivered;
+    }
+
+    if ('statusIds' in copyWhere) {
+      copyWhere.statusId = In(copyWhere.statusIds);
+      delete copyWhere.statusIds;
+    }
+
+    if ('noOrder' in copyWhere) {
+      copyWhere.noOrder = ILike(`%${copyWhere.noOrder}%`);
     }
 
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
     });
+
     return {
       items: await this.repo.find({
         where: this.utils.removeNullFields(copyWhere),
@@ -180,6 +221,34 @@ export class OrderService {
     );
 
     return sum;
+  }
+
+  async markAsDeliveredToday(): Promise<boolean> {
+    try {
+      const serverMinutesDiff = new Date().getTimezoneOffset();
+      const todayDateFrom = dayjs()
+        .subtract(serverMinutesDiff, 'minutes')
+        .toDate();
+
+      const todayDateTo = dayjs()
+        .add(serverMinutesDiff, 'minutes')
+        .add(1, 'day')
+        .toDate();
+
+      const orders = await this.repo.find({
+        where: {
+          createdAt: Between(todayDateFrom, todayDateTo),
+          statusId: 3,
+        },
+      });
+
+      const payload = orders.map((order) => ({ id: order.id, statusId: 4 }));
+      await this.repo.save(this.repo.create(payload));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   private async generateNoOrder(userId: number): Promise<string> {

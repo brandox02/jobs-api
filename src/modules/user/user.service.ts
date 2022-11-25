@@ -24,7 +24,7 @@ export class UserService {
     where: UserWhere,
     order: FindOptionsOrder<User> = { createdAt: 'ASC' },
   ): Promise<User[]> {
-    const filteredWhere = this.utils.removeNullFields<User>(where);
+    const filteredWhere = this.utils.removeNullFields(where);
 
     const users = await this.repo.find({
       where: filteredWhere,
@@ -34,7 +34,7 @@ export class UserService {
   }
 
   async findOne(where: UserWhere): Promise<User | null> {
-    const filteredWhere = this.utils.removeNullFields<User>(where);
+    const filteredWhere = this.utils.removeNullFields(where);
     if (Object.keys(filteredWhere).length > 0) {
       const user = await this.repo.findOne({
         where: filteredWhere,

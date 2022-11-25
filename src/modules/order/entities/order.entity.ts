@@ -5,7 +5,6 @@ import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { OrderDetail } from './order-detail.entity';
 import { OrderStatus } from './order-status.entity';
-import { OrderType } from './order-type.entity';
 
 @Entity({ name: 'orders' })
 @ObjectType()

@@ -24,6 +24,11 @@ export class OrderResolver {
     return this.orderService.create(createOrderInput);
   }
 
+  @Mutation(() => Boolean)
+  async markAsDeliveredToday(): Promise<boolean> {
+    return this.orderService.markAsDeliveredToday();
+  }
+
   @Query(() => [Order])
   async orderList(
     @Args('where', { defaultValue: {} }) where: OrderWhereInput,

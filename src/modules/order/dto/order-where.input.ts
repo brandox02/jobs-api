@@ -4,6 +4,7 @@ import { InputType } from '@nestjs/graphql';
 export class OrderWhereInput {
   id?: number;
   userId?: number;
+  noOrder?: string;
   // deliverDate?: Date;
   // createdAt?: Date;
   typeId?: number;
@@ -11,4 +12,6 @@ export class OrderWhereInput {
   fromDate?: Date;
   toDate?: Date;
   filterDateByDelivered?: boolean;
+  fullname?: string;
+  statusIds?: number[];
 }
