@@ -1,10 +1,14 @@
-import { Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { GetUserInfo } from './dto/index.output';
+import { GetUserInfo, PaginatedUser } from './dto/index.output';
 import { Order } from '../order/entities/order.entity';
 import * as dayjs from 'dayjs';
+import { User } from './entities/user.entity';
+import { CreateUserInput } from './dto/create-user.input';
+import { UserWhereInput } from './dto/user-where.input';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Resolver()
 export class UserResolver {
@@ -21,10 +25,35 @@ export class UserResolver {
       .update({ id: 84 }, { createdAt: dayjs().add(2, 'minutes').toDate() });
     return context.req.user;
   }
-  // @Query(() => [User])
-  // async users(@Args('user', { nullable: true }) user: UserInput) {
-  //   return this.service.findAll(user);
-  // }
+  @Query(() => PaginatedUser)
+  async users(
+    @Args('page', { defaultValue: 1 }) page: number,
+    @Args('perPage', { defaultValue: 12 }) perPage: number,
+    @Args('where', { defaultValue: {} }) where: UserWhereInput,
+  ): Promise<PaginatedUser> {
+    const response = await this.service.find({
+      page,
+      perPage,
+      where,
+      order: { id: 'DESC' },
+    });
+    return response;
+  }
+
+  @Query(() => [User])
+  async usersList(@Args('where', { defaultValue: {} }) where: UserWhereInput) {
+    return this.service.findAll(where, { id: 'DESC' });
+  }
+
+  @Mutation(() => User)
+  async updateUser(@Args('input') input: UpdateUserInput): Promise<User> {
+    return this.service.update(input);
+  }
+
+  @Mutation(() => User)
+  async createUser(@Args('input') input: CreateUserInput): Promise<User> {
+    return this.service.create(input);
+  }
 
   // @Query(() => User, { nullable: true })
   // async user(@Args('where') where: UserInput) {

@@ -1,6 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { UserInput } from '../user/dto/index.input';
+import { CreateUserInput } from '../user/dto/create-user.input';
 import { AuthService } from './auth.service';
 import { LoginOutput } from './dto/index.output';
 import { isPublicResolver } from './jwtStratedy.guard';
@@ -29,7 +29,7 @@ export class AuthResolver {
 
   @Mutation(() => LoginOutput)
   @isPublicResolver()
-  async signin(@Args('user') userInput: UserInput) {
+  async signin(@Args('user') userInput: CreateUserInput) {
     return this.authService.signin(userInput);
   }
 }

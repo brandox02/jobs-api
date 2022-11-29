@@ -3,7 +3,7 @@ import { Order } from '../entities/order.entity';
 import { Paginate } from '../order.service';
 
 @ObjectType()
-export class PaginatedMetada {
+export class PaginatedMetadata {
   totalItems: number;
   perPage: number;
   totalPages: number;
@@ -12,5 +12,5 @@ export class PaginatedMetada {
 @ObjectType()
 export class PaginatedOrder implements Paginate<Order> {
   items: Order[];
-  metadata: PaginatedMetada;
+  metadata: PaginatedMetadata;
 }

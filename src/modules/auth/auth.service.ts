@@ -5,11 +5,11 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ResourceExistsException } from 'src/common/GqlExeptions/ResourceExistsException';
 import { omit } from 'lodash';
-import { UserInput } from '../user/dto/index.input';
 import { UserService } from '../user/user.service';
 import { LoginOutput } from './dto/index.output';
+import { CreateUserInput } from '../user/dto/create-user.input';
 
-export type AuthenticatedUser = Omit<UserInput, 'password'>;
+export type AuthenticatedUser = Omit<User, 'password'>;
 // export type LoginOutput = { accessToken: string };
 
 @Injectable()
@@ -46,7 +46,7 @@ export class AuthService {
     return token;
   }
 
-  async signin(userInput: UserInput) {
+  async signin(userInput: CreateUserInput) {
     const { email, cedula } = userInput;
     const userRepo = this.dataSource.getRepository(User);
     const userFound = await userRepo

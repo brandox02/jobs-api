@@ -121,23 +121,6 @@ export class OrderService {
     return items;
   }
 
-  async findOne(where: FindOptionsWhere<Order>): Promise<Order> {
-    const withoutNull = this.utils.removeNullFields(where);
-    if (!where || Object.keys(withoutNull).length == 0) {
-      throw NotFoundException('Order');
-    }
-
-    const item = await this.repo.findOne({
-      where: withoutNull,
-      relations: this.relations,
-    });
-
-    if (!item) {
-      throw NotFoundException('Order');
-    }
-    return item;
-  }
-
   async find({
     page,
     perPage,
@@ -194,6 +177,23 @@ export class OrderService {
         totalPages: Math.ceil(totalItems / perPage),
       },
     };
+  }
+
+  async findOne(where: FindOptionsWhere<Order>): Promise<Order> {
+    const withoutNull = this.utils.removeNullFields(where);
+    if (!where || Object.keys(withoutNull).length == 0) {
+      throw NotFoundException('Order');
+    }
+
+    const item = await this.repo.findOne({
+      where: withoutNull,
+      relations: this.relations,
+    });
+
+    if (!item) {
+      throw NotFoundException('Order');
+    }
+    return item;
   }
 
   async update(orderInput: UpdateOrderInput): Promise<Order> {
