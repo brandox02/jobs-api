@@ -1,4 +1,5 @@
 import { ObjectType } from '@nestjs/graphql';
+
 import { Order } from '../entities/order.entity';
 import { Paginate } from '../order.service';
 
@@ -8,7 +9,6 @@ export class PaginatedMetadata {
   perPage: number;
   totalPages: number;
 }
-
 @ObjectType()
 export class PaginatedOrder implements Paginate<Order> {
   items: Order[];

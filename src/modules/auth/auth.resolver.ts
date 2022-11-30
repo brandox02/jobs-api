@@ -18,8 +18,13 @@ export class AuthResolver {
     @Args('password') password: string,
   ) {
     const user = await this.authService.validateUser(email, password);
+
     if (!user) {
       throw new UnauthorizedException();
+    }
+
+    if (!user.enabled) {
+      throw new Error('UNACTIVE_USER');
     }
 
     const response = await this.authService.login(user);

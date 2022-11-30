@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { Company } from 'src/modules/company/entities/company.entity';
 import { Department } from 'src/modules/department/entities/department.entity';
@@ -14,7 +14,7 @@ export class User extends BaseEntity {
   @Column()
   lastname: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   enabled: boolean;
 
   @Column({ unique: true })
@@ -27,6 +27,7 @@ export class User extends BaseEntity {
   password: string;
 
   @Column({ name: 'enable_date', nullable: true })
+  @Field({ nullable: true })
   enableDate: Date;
 
   @Column({ name: 'company_id' })

@@ -12,4 +12,5 @@ export class UpdateUserInput {
   cedula?: string;
   roleId?: number;
   enabled?: boolean;
+  enableDate?: Date;
 }

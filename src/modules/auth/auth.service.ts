@@ -25,6 +25,7 @@ export class AuthService {
     password: string,
   ): Promise<AuthenticatedUser | null> {
     const user = await this.userService.findOne({ email });
+
     if (user && user.password === password) {
       const userPicked = omit(user, 'password');
       return userPicked;

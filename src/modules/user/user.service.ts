@@ -126,7 +126,12 @@ export class UserService {
   }
 
   async update(user: UpdateUserInput): Promise<User> {
-    const userSaved = await this.repo.save(this.repo.create(user));
+    const userInput = { ...user };
+    if (userInput?.enabled) {
+      userInput.enableDate = dayjs().toDate();
+    }
+
+    const userSaved = await this.repo.save(this.repo.create(userInput));
 
     return this.repo.findOne({ where: { id: userSaved.id } });
   }
