@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindAllInput } from 'src/common/FindAllInput.input';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { CompanytWhereInput } from './dto/index.input';
+import { CompanyWhereInput } from './dto/index.input';
 import { Company } from './entities/company.entity';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class CompanyService {
   //   skip,
   //   take,
   //   where,
-  // }: FindAllInput<CompanytWhereInput>): Promise<Company[]> {
+  // }: FindAllInput<CompanyWhereInput>): Promise<Company[]> {
   //   return await this.repo.find({
   //     where: this.utils.removeNullFields(where),
   //     skip,

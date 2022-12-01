@@ -10,4 +10,5 @@ export class WhereClaimInput {
   fromDate?: Date;
   toDate?: Date;
   noOrder?: string;
+  done?: boolean;
 }

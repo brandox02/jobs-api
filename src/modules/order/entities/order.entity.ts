@@ -1,5 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
+import { Claim } from 'src/modules/claim/entities/claim.entity';
 import { Menu } from 'src/modules/menu/entities/menu.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
@@ -58,4 +59,7 @@ export class Order extends BaseEntity {
     cascade: true,
   })
   details?: OrderDetail[];
+
+  @OneToMany(() => Claim, (c) => c.order)
+  claims?: Claim[];
 }

@@ -39,6 +39,7 @@ export class OrderService {
     'user.department',
     'status',
     'type',
+    'claims',
   ];
   constructor(
     @InjectRepository(Order) private readonly repo: Repository<Order>,

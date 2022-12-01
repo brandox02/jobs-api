@@ -17,7 +17,7 @@ import { omit } from 'lodash';
 
 @Injectable()
 export class UserService {
-  private relations: string[] = ['company', 'department'];
+  private relations: string[] = ['company', 'department', 'role'];
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
     //private readonly fileUploadService: FileUploadService,
@@ -102,10 +102,7 @@ export class UserService {
         order: {
           createdAt: 'ASC',
         },
-        relations: {
-          department: true,
-          company: true,
-        },
+        relations: this.relations,
       });
 
       if (!user) {

@@ -44,10 +44,10 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'role_id' })
   role: Company;
 
-  @Column({ name: 'department_id' })
-  departmentId: number;
+  @Column({ name: 'department_id', nullable: true })
+  departmentId?: number;
 
   @ManyToOne(() => Department)
   @JoinColumn({ name: 'department_id' })
-  department: Department;
+  department?: Department;
 }

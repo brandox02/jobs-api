@@ -1,6 +1,7 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
-import { Column, Entity } from 'typeorm';
+import { Department } from 'src/modules/department/entities/department.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('companies')
 @ObjectType()
@@ -16,4 +17,7 @@ export class Company extends BaseEntity {
 
   @Column()
   acronym: string;
+
+  @OneToMany(() => Department, (c) => c.company, { cascade: true })
+  departments?: Department[];
 }

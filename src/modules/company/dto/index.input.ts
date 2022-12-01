@@ -1,7 +1,7 @@
 import { InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CompanytWhereInput {
+export class CompanyWhereInput {
   name?: string;
   id?: number;
   sede?: string;

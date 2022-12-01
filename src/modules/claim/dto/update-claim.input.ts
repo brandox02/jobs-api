@@ -6,4 +6,5 @@ export class UpdateClaimInput {
   description?: string;
   name?: string;
   orderId?: number;
+  done?: boolean;
 }

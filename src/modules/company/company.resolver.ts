@@ -1,9 +1,8 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { CompanyService } from './company.service';
 import { Company } from './entities/company.entity';
-
-import { CompanytWhereInput } from './dto/index.input';
 import { isPublicResolver } from '../auth/jwtStratedy.guard';
+import { CompanyWhereInput } from './dto/index.input';
 
 @Resolver(() => Company)
 export class CompanyResolver {
@@ -18,7 +17,7 @@ export class CompanyResolver {
   @isPublicResolver()
   @Query(() => [Company], { name: 'companyList' })
   findAll(
-    @Args('where', { nullable: true }) where: CompanytWhereInput,
+    @Args('where', { nullable: true }) where: CompanyWhereInput,
   ): Promise<Company[]> {
     return this.companyService.findAll(where);
   }

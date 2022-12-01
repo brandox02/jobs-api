@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindAllInput } from 'src/common/FindAllInput.input';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { DepartmentWhereInput } from './dto/index.input';
+import { DepartmentWhereInput } from './dto/department-where.input';
 import { Department } from './entities/department.entity';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class DepartmentService {
   // }
 
   async findAll(
-    where: FindOptionsWhere<Department> = {},
+    where: FindOptionsWhere<DepartmentWhereInput> = {},
   ): Promise<Department[]> {
     return await this.repo.find({ where });
   }

@@ -20,9 +20,9 @@ export class UserResolver {
 
   @Query(() => GetUserInfo)
   async getUserInfo(@Context() context: any): Promise<GetUserInfo> {
-    await this.dataSource
-      .getRepository(Order)
-      .update({ id: 84 }, { createdAt: dayjs().add(2, 'minutes').toDate() });
+    // await this.dataSource
+    //   .getRepository(Order)
+    //   .update({ id: 84 }, { createdAt: dayjs().add(2, 'minutes').toDate() });
     return context.req.user;
   }
   @Query(() => PaginatedUser)

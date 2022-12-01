@@ -1,7 +1,7 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { isPublicResolver } from '../auth/jwtStratedy.guard';
 import { DepartmentService } from './department.service';
-import { DepartmentWhereInput } from './dto/index.input';
+import { DepartmentWhereInput } from './dto/department-where.input';
 import { Department } from './entities/department.entity';
 
 @Resolver(() => Department)
