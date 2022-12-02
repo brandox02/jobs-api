@@ -30,4 +30,12 @@ export class GeneralParameterResolver {
   ): Promise<GeneralParameter> {
     return this.generalParameterService.update(input);
   }
+
+  @Mutation(() => [GeneralParameter])
+  async updateGeneralParameters(
+    @Args({ name: 'input', type: () => [UpdateGeneralParameterInput] })
+    input: UpdateGeneralParameterInput[],
+  ): Promise<GeneralParameter[]> {
+    return this.generalParameterService.updateAll(input);
+  }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, In, Repository } from 'typeorm';
 import { GeneralParameterWhereInput } from './dto/general-paremeter-where.input';
 import { UpdateGeneralParameterInput } from './dto/update-general-parameter.input';
 import { GeneralParameter } from './entities/general-parameter.entity';
@@ -45,5 +45,12 @@ export class GeneralParameterService {
   async update(input: UpdateGeneralParameterInput): Promise<GeneralParameter> {
     await this.repo.save(this.repo.create(input));
     return this.findOne({ id: input.id });
+  }
+
+  async updateAll(
+    input: UpdateGeneralParameterInput[],
+  ): Promise<GeneralParameter[]> {
+    await this.repo.save(this.repo.create(input));
+    return this.repo.find({ where: { id: In(input.map((item) => item.id)) } });
   }
 }
