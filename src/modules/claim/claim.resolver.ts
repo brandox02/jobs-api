@@ -50,7 +50,10 @@ export class ClaimResolver {
   }
 
   @Mutation(() => Claim)
-  async updateClaim(@Args('input') input: UpdateClaimInput): Promise<Claim> {
-    return this.service.update(input);
+  async updateClaim(
+    @Args('input') input: UpdateClaimInput,
+    @Context() context: any,
+  ): Promise<Claim> {
+    return this.service.update(input, context);
   }
 }

@@ -153,7 +153,7 @@ export class ClaimService {
     };
   }
 
-  async findOne(where: FindOptionsWhere<Claim>, context?: any): Promise<Claim> {
+  async findOne(where: FindOptionsWhere<Claim>, context: any): Promise<Claim> {
     const copyWhere: any = { ...where };
     const withoutNull = this.utils.removeNullFields(copyWhere);
     if (!where || Object.keys(withoutNull).length == 0) {
@@ -177,8 +177,8 @@ export class ClaimService {
     return item;
   }
 
-  async update(input: UpdateClaimInput): Promise<Claim> {
-    await this.repo.save(this.repo.create(input), { transaction: true });
-    return this.findOne({ id: input.id });
+  async update(input: UpdateClaimInput, context: any): Promise<Claim> {
+    await this.repo.save(this.repo.create(input));
+    return this.findOne({ id: input.id }, context);
   }
 }
