@@ -14,6 +14,12 @@ export class User extends BaseEntity {
   @Column()
   lastname: string;
 
+  @Column({ nullable: true })
+  imageId?: string;
+
+  @Column({ nullable: true })
+  imageUrl?: string;
+
   @Column({ default: false })
   enabled: boolean;
 

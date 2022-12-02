@@ -30,28 +30,4 @@ export class GeneralParameterResolver {
   ): Promise<GeneralParameter> {
     return this.generalParameterService.update(input);
   }
-  // @Mutation(() => GeneralParameter)
-  // createGeneralParameter(@Args('createGeneralParameterInput') createGeneralParameterInput: CreateGeneralParameterInput) {
-  //   return this.generalParameterService.create(createGeneralParameterInput);
-  // }
-
-  // @Query(() => [GeneralParameter], { name: 'generalParameter' })
-  // findAll() {
-  //   return this.generalParameterService.findAll();
-  // }
-
-  // @Query(() => GeneralParameter, { name: 'generalParameter' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.generalParameterService.findOne(id);
-  // }
-
-  // @Mutation(() => GeneralParameter)
-  // updateGeneralParameter(@Args('updateGeneralParameterInput') updateGeneralParameterInput: UpdateGeneralParameterInput) {
-  //   return this.generalParameterService.update(updateGeneralParameterInput.id, updateGeneralParameterInput);
-  // }
-
-  // @Mutation(() => GeneralParameter)
-  // removeGeneralParameter(@Args('id', { type: () => Int }) id: number) {
-  //   return this.generalParameterService.remove(id);
-  // }
 }

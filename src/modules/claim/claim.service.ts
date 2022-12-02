@@ -18,6 +18,7 @@ export class ClaimService {
     'order',
     'order.user',
     'order.user.department',
+    'order.user.company',
   ];
   constructor(
     @InjectRepository(Claim) private readonly repo: Repository<Claim>,
@@ -28,7 +29,7 @@ export class ClaimService {
     return claim;
   }
 
-  async findAll(where: WhereClaimInput = {}): Promise<Claim[]> {
+  async findAll(where: WhereClaimInput = {}, context: any): Promise<Claim[]> {
     let copyWhere: any = { ...where };
 
     const serverMinutesDiff = new Date().getTimezoneOffset();
@@ -54,6 +55,12 @@ export class ClaimService {
       delete copyWhere.filterDateByDelivered;
     }
 
+    if (context.req.user.role.id !== 3) {
+      copyWhere.order = {};
+      copyWhere.order.user = {};
+      copyWhere.order.user.companyId = context.req.user.company.id;
+    }
+
     const items = await this.repo.find({
       where: this.utils.removeNullFields(copyWhere),
       relations: this.relations,
@@ -68,6 +75,7 @@ export class ClaimService {
     perPage,
     where,
     order,
+    context,
   }: FindAllInput<WhereClaimInput>): Promise<Paginate<Claim>> {
     let copyWhere: any = { ...where };
     const serverMinutesDiff = new Date().getTimezoneOffset();
@@ -123,6 +131,11 @@ export class ClaimService {
     //   .take(perPage)
     //   .addOrderBy('id', 'DESC')
     //   .getMany();
+    if (context.req.user.role.id !== 3) {
+      copyWhere.order = {};
+      copyWhere.order.user = {};
+      copyWhere.order.user.companyId = context.req.user.company.id;
+    }
 
     return {
       items: await this.repo.find({
@@ -140,10 +153,17 @@ export class ClaimService {
     };
   }
 
-  async findOne(where: FindOptionsWhere<Claim>): Promise<Claim> {
-    const withoutNull = this.utils.removeNullFields(where);
+  async findOne(where: FindOptionsWhere<Claim>, context?: any): Promise<Claim> {
+    const copyWhere: any = { ...where };
+    const withoutNull = this.utils.removeNullFields(copyWhere);
     if (!where || Object.keys(withoutNull).length == 0) {
       throw NotFoundException('Claim');
+    }
+
+    if (context.req.user.role.id !== 3) {
+      copyWhere.order = {};
+      copyWhere.order.user = {};
+      copyWhere.order.user.companyId = context.req.user.company.id;
     }
 
     const item = await this.repo.findOne({

@@ -8,7 +8,7 @@ INSERT INTO companies(id, name,sede,location,acronym) VALUES
 (1, 'OGTIC', 'principal', '#311, Edifciio Corporativo Vista 31, Bella Vista. Sto. Dgo., R.D.', 'OGTIC');
 
 
-INSERT INTO departments(id, name) VALUES (1,'Plataformas y servicios');
+INSERT INTO departments(id, name,company_id) VALUES (1,'Plataformas y servicios',1);
 
 INSERT INTO order_status(id,name) VALUES
 (1,'En Carrito'),

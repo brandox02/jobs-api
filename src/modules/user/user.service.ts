@@ -14,6 +14,8 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { FindAllInput } from 'src/common/FindAllInput.input';
 import { Paginate } from '../order/order.service';
 import { omit } from 'lodash';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UpdateUser } from './dto/index.output';
 
 @Injectable()
 export class UserService {
@@ -24,13 +26,19 @@ export class UserService {
     private readonly utils: UtilsProvider,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    private readonly cloudinary: CloudinaryService,
   ) {}
 
   async findAll(
     where: UserWhereInput,
     order: FindOptionsOrder<User> = { createdAt: 'ASC' },
+    context: any,
   ): Promise<User[]> {
     const filteredWhere = this.utils.removeNullFields(where);
+
+    if (context.req.user.role.id !== 3) {
+      filteredWhere.companyId = filteredWhere.req.user.company.id;
+    }
 
     const users = await this.repo.find({
       where: filteredWhere,
@@ -44,6 +52,7 @@ export class UserService {
     perPage,
     where,
     order,
+    context,
   }: FindAllInput<UserWhereInput>): Promise<Paginate<User>> {
     let copyWhere: any = { ...where };
     const serverMinutesDiff = new Date().getTimezoneOffset();
@@ -70,8 +79,11 @@ export class UserService {
 
     if (copyWhere.name) {
       copyWhere.firstname = ILike(`%${copyWhere.name}%`);
-      // copyWhere.lastname = ILike(`%${copyWhere.name}%`);
       delete copyWhere.name;
+    }
+
+    if (context.req.user.role.id !== 3) {
+      copyWhere.companyId = context.req.user.company.id;
     }
 
     const totalItems = await this.repo.count({
@@ -122,14 +134,47 @@ export class UserService {
     // return this.authService.getToken(userSaved);
   }
 
-  async update(user: UpdateUserInput): Promise<User> {
+  async update(user: UpdateUserInput): Promise<UpdateUser> {
     const userInput = { ...user };
+    if (user?.image) {
+      const userFound = await this.findOne({ id: user.id });
+      const { url } = await this.cloudinary.uploadImage(
+        user.image,
+        userFound.imageId,
+      );
+      userInput.imageUrl = url;
+    }
+
     if (userInput?.enabled) {
       userInput.enableDate = dayjs().toDate();
     }
 
     const userSaved = await this.repo.save(this.repo.create(userInput));
+    const userFinded = await this.findOne({ id: userSaved.id });
+    const { accessToken } = await this.authService.getToken(userFinded);
 
-    return this.repo.findOne({ where: { id: userSaved.id } });
+    return { accessToken, user: userFinded };
+  }
+
+  async updatePassword({
+    userId,
+    currentPassword,
+    newPassword,
+  }: {
+    userId: number;
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<string> {
+    const user = await this.findOne({ id: userId });
+    if (user.password !== currentPassword) {
+      return 'UMMATCH_PASS_CURR';
+    }
+    if (currentPassword === newPassword) {
+      return 'MATCH_NEW_PASS_AND_OLD';
+    }
+    await this.repo.save(
+      this.repo.create({ id: userId, password: newPassword }),
+    );
+    return '';
   }
 }

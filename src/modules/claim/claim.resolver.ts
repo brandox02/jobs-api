@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { PaginatedOrder } from '../order/dto/paginated-order.output';
 import { Paginate } from '../order/order.service';
 import { ClaimService } from './claim.service';
@@ -10,23 +10,27 @@ import { Claim } from './entities/claim.entity';
 
 @Resolver(() => Claim)
 export class ClaimResolver {
-  constructor(private readonly orderService: ClaimService) {}
+  constructor(private readonly service: ClaimService) {}
 
   @Mutation(() => Claim)
   async createClaim(@Args('input') input: CreateClaimInput): Promise<Claim> {
-    return this.orderService.create(input);
+    return this.service.create(input);
   }
 
   @Query(() => [Claim])
   async claimList(
     @Args('where', { defaultValue: {} }) where: WhereClaimInput,
+    @Context() context: any,
   ): Promise<Claim[]> {
-    return this.orderService.findAll(where);
+    return this.service.findAll(where, context);
   }
 
   @Query(() => Claim)
-  async claim(@Args('where') where: WhereClaimInput): Promise<Claim> {
-    return this.orderService.findOne(where);
+  async claim(
+    @Args('where') where: WhereClaimInput,
+    @Context() context: any,
+  ): Promise<Claim> {
+    return this.service.findOne(where, context);
   }
 
   @Query(() => PaginatedClaim)
@@ -34,8 +38,10 @@ export class ClaimResolver {
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('perPage', { defaultValue: 12 }) perPage: number,
     @Args('where', { defaultValue: {} }) where: WhereClaimInput,
+    @Context() context: any,
   ): Promise<Paginate<Claim>> {
-    return this.orderService.find({
+    return this.service.find({
+      context,
       page,
       perPage,
       where,
@@ -45,6 +51,6 @@ export class ClaimResolver {
 
   @Mutation(() => Claim)
   async updateClaim(@Args('input') input: UpdateClaimInput): Promise<Claim> {
-    return this.orderService.update(input);
+    return this.service.update(input);
   }
 }

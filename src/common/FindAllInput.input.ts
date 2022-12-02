@@ -5,4 +5,5 @@ export type FindAllInput<T> = {
   where: T;
   perPage: number;
   order: FindOptionsOrder<T>;
+  context?: any;
 };

@@ -32,8 +32,9 @@ export class OrderResolver {
   @Query(() => [Order])
   async orderList(
     @Args('where', { defaultValue: {} }) where: OrderWhereInput,
+    @Context() context: any,
   ): Promise<Order[]> {
-    return this.orderService.findAll(where);
+    return this.orderService.findAll(where, context);
   }
 
   @Query(() => Order)
@@ -46,8 +47,10 @@ export class OrderResolver {
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('perPage', { defaultValue: 12 }) perPage: number,
     @Args('where', { defaultValue: {} }) where: OrderWhereInput,
+    @Context() context: any,
   ): Promise<Paginate<Order>> {
     return this.orderService.find({
+      context,
       page,
       perPage,
       where,
@@ -65,5 +68,12 @@ export class OrderResolver {
   @Query(() => Float)
   async moneyAccumulatedMonth(@Context() context: any): Promise<number> {
     return this.orderService.moneyAccumulatedMonth(context.req.user.id);
+  }
+
+  @Query(() => Float)
+  async moneyAccumulatedMonthCompany(@Context() context: any): Promise<number> {
+    return this.orderService.moneyAccumulatedMonthCompany(
+      context.req.user.company.id,
+    );
   }
 }

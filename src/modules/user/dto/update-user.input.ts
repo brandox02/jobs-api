@@ -4,7 +4,7 @@ import { InputType } from '@nestjs/graphql';
 export class UpdateUserInput {
   id: number;
   email?: string;
-  password?: string;
+  // password?: string;
   firstname?: string;
   lastname?: string;
   departmentId?: number;
@@ -13,4 +13,6 @@ export class UpdateUserInput {
   roleId?: number;
   enabled?: boolean;
   enableDate?: Date;
+  image?: string;
+  imageUrl?: string;
 }

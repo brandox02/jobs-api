@@ -2,9 +2,7 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { GetUserInfo, PaginatedUser } from './dto/index.output';
-import { Order } from '../order/entities/order.entity';
-import * as dayjs from 'dayjs';
+import { GetUserInfo, PaginatedUser, UpdateUser } from './dto/index.output';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserWhereInput } from './dto/user-where.input';
@@ -23,15 +21,19 @@ export class UserResolver {
     // await this.dataSource
     //   .getRepository(Order)
     //   .update({ id: 84 }, { createdAt: dayjs().add(2, 'minutes').toDate() });
-    return context.req.user;
+    // return context.req.user;
+    const d: any = await this.service.findOne({ id: context.req.user.id });
+    return d;
   }
   @Query(() => PaginatedUser)
   async users(
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('perPage', { defaultValue: 12 }) perPage: number,
     @Args('where', { defaultValue: {} }) where: UserWhereInput,
+    @Context() context: any,
   ): Promise<PaginatedUser> {
     const response = await this.service.find({
+      context,
       page,
       perPage,
       where,
@@ -41,12 +43,15 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  async usersList(@Args('where', { defaultValue: {} }) where: UserWhereInput) {
-    return this.service.findAll(where, { id: 'DESC' });
+  async usersList(
+    @Args('where', { defaultValue: {} }) where: UserWhereInput,
+    @Context() context: any,
+  ) {
+    return this.service.findAll(where, { id: 'DESC' }, context);
   }
 
-  @Mutation(() => User)
-  async updateUser(@Args('input') input: UpdateUserInput): Promise<User> {
+  @Mutation(() => UpdateUser)
+  async updateUser(@Args('input') input: UpdateUserInput): Promise<UpdateUser> {
     return this.service.update(input);
   }
 
@@ -55,16 +60,16 @@ export class UserResolver {
     return this.service.create(input);
   }
 
-  // @Query(() => User, { nullable: true })
-  // async user(@Args('where') where: UserInput) {
-  //   return this.service.findOne(where);
-  // }
-
-  // @Mutation(() => LoginOutput, {
-  //   description:
-  //     'create or update depending if send id or not, if is create you need to send all entity fields without a id, if is update just is obligatory send the _id field',
-  // })
-  // async saveUser(@Args('user') user: UserInput): Promise<LoginOutput> {
-  //   return this.service.save(user);
-  // }
+  @Mutation(() => String)
+  async updatePassword(
+    @Args('userId') userId: number,
+    @Args('currentPassword') currentPassword: string,
+    @Args('newPassword') newPassword: string,
+  ): Promise<string> {
+    return this.service.updatePassword({
+      userId,
+      currentPassword,
+      newPassword,
+    });
+  }
 }

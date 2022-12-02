@@ -82,7 +82,7 @@ export class OrderService {
     return order;
   }
 
-  async findAll(where: OrderWhereInput = {}): Promise<Order[]> {
+  async findAll(where: OrderWhereInput = {}, context: any): Promise<Order[]> {
     let copyWhere: any = { ...where };
 
     const serverMinutesDiff = new Date().getTimezoneOffset();
@@ -113,6 +113,11 @@ export class OrderService {
       delete copyWhere.statusIds;
     }
 
+    if (context.req.user.role.id !== 3) {
+      copyWhere.user = {};
+      copyWhere.user.companyId = context.req.user.company.id;
+    }
+
     const items = await this.repo.find({
       where: this.utils.removeNullFields(copyWhere),
       relations: this.relations,
@@ -123,6 +128,7 @@ export class OrderService {
   }
 
   async find({
+    context,
     page,
     perPage,
     where,
@@ -158,6 +164,11 @@ export class OrderService {
 
     if ('noOrder' in copyWhere) {
       copyWhere.noOrder = ILike(`%${copyWhere.noOrder}%`);
+    }
+
+    if (context.req.user.role.id !== 3) {
+      copyWhere.user = {};
+      copyWhere.user.companyId = context.req.user.company.id;
     }
 
     const totalItems = await this.repo.count({
@@ -214,6 +225,25 @@ export class OrderService {
       .where(
         'extract(month from order.created_at) = :month and order.user_id = :userId and status_id = :statusId',
         { month, userId, statusId: 4 },
+      )
+      .getMany();
+    const sum = orders.reduce(
+      (acc, curr) => acc + parseFloat(curr.total.toString()),
+      0,
+    );
+
+    return sum;
+  }
+
+  async moneyAccumulatedMonthCompany(companyId: number) {
+    const month: number = dayjs().get('month') + 1;
+    // and order.user.company_id = :companyId
+    const orders = await this.repo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      .where(
+        'extract(month from order.created_at) = :month and status_id = :statusId and user.company_id = :companyId',
+        { month, companyId, statusId: 4 },
       )
       .getMany();
     const sum = orders.reduce(

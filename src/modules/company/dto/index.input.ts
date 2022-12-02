@@ -7,3 +7,12 @@ export class CompanyWhereInput {
   sede?: string;
   location?: string;
 }
+
+@InputType()
+export class UpdateCompanyInput {
+  id?: number;
+  name?: string;
+  sede?: string;
+  location?: string;
+  acronym?: string;
+}

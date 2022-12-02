@@ -1,19 +1,13 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { CompanyService } from './company.service';
 import { Company } from './entities/company.entity';
 import { isPublicResolver } from '../auth/jwtStratedy.guard';
-import { CompanyWhereInput } from './dto/index.input';
+import { CompanyWhereInput, UpdateCompanyInput } from './dto/index.input';
 
 @Resolver(() => Company)
 export class CompanyResolver {
   constructor(private readonly companyService: CompanyService) {}
 
-  // @Mutation(() => Company)
-  // createCompany(
-  //   @Args('createCompanyInput') createCompanyInput: CreateCompanyInput,
-  // ) {
-  //   return this.companyService.create(createCompanyInput);
-  // }
   @isPublicResolver()
   @Query(() => [Company], { name: 'companyList' })
   findAll(
@@ -22,23 +16,10 @@ export class CompanyResolver {
     return this.companyService.findAll(where);
   }
 
-  // @Query(() => Company, { name: 'company' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.companyService.findOne(id);
-  // }
-
-  // @Mutation(() => Company)
-  // updateCompany(
-  //   @Args('updateCompanyInput') updateCompanyInput: UpdateCompanyInput,
-  // ) {
-  //   return this.companyService.update(
-  //     updateCompanyInput.id,
-  //     updateCompanyInput,
-  //   );
-  // }
-
-  // @Mutation(() => Company)
-  // removeCompany(@Args('id', { type: () => Int }) id: number) {
-  //   return this.companyService.remove(id);
-  // }
+  @Mutation(() => Company)
+  async updateCompany(
+    @Args('input') input: UpdateCompanyInput,
+  ): Promise<Company> {
+    return this.companyService.update(input);
+  }
 }

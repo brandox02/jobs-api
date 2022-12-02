@@ -19,10 +19,17 @@ export class GetUserInfo {
   department?: Department;
   company: Company;
   role: Role;
+  imageUrl?: string;
 }
 
 @ObjectType()
 export class PaginatedUser implements Paginate<User> {
   items: User[];
   metadata: PaginatedMetadata;
+}
+
+@ObjectType()
+export class UpdateUser {
+  accessToken: string;
+  user: User;
 }
