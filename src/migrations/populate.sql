@@ -27,9 +27,9 @@ INSERT INTO order_types(id,name) VALUES
 (5, 'Panadería');
 
 INSERT INTO general_parameters(id, name, value, description) VALUES
-(1, 'Tiempo de confimación de order', '15', ''),
-(2, 'Hora limite para ordenar', '10', ''),
-(3, 'Precio plato del dia', '150', '');
+(1, 'Tiempo de confimación de order', '15', 'Tiempo de confimación de orden en minutos'),
+(2, 'Hora limite para ordenar', '10', 'Hora limite para ordenar en formato 24horas'),
+(3, 'Precio plato del dia', '150', 'Precio del plato del dia en pesos dominicanos');
 
 
 INSERT INTO menus(id, name, json) values (1, 'Plato del dia','{"typeId": 1, "items": []}');
