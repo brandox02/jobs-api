@@ -5,10 +5,10 @@ INSERT INTO roles(id, name) VALUES
 
 
 INSERT INTO companies(id, name,sede,location,acronym) VALUES 
-(1, 'OGTIC', 'principal', '#311, Edifciio Corporativo Vista 31, Bella Vista. Sto. Dgo., R.D.', 'OGTIC');
+(1, 'PACOME', 'PACOME', 'PACOME', 'PACOME');
 
 
-INSERT INTO departments(id, name,company_id) VALUES (1,'Plataformas y servicios',1);
+INSERT INTO departments(id, name,company_id) VALUES (1,'PACOME',1);
 
 INSERT INTO order_status(id,name) VALUES
 (1,'En Carrito'),
@@ -33,3 +33,6 @@ INSERT INTO general_parameters(id, name, value, description) VALUES
 
 
 INSERT INTO menus(id, name, json) values (1, 'Plato del dia','{"typeId": 1, "items": []}');
+
+INSERT INTO users(id, firstname, lastname,enabled, cedula, email,password,company_id,department_id, role_id)
+values(1, 'PACOME', 'ADMIN', true, 'PACOME', 'admin@pacome.com','admin', 1,1,3);

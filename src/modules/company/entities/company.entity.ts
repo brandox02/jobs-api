@@ -18,6 +18,6 @@ export class Company extends BaseEntity {
   @Column()
   acronym: string;
 
-  @OneToMany(() => Department, (c) => c.company, { cascade: true })
+  @OneToMany(() => Department, (d) => d.company, { cascade: true })
   departments?: Department[];
 }

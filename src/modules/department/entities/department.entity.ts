@@ -9,7 +9,7 @@ export class Department extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ name: 'company_id', nullable: true })
+  @Column({ name: 'company_id' })
   companyId: number;
 
   @ManyToOne(() => Company, (c) => c.departments)
