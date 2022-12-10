@@ -8,6 +8,7 @@ import { omit } from 'lodash';
 import { UserService } from '../user/user.service';
 import { LoginOutput } from './dto/index.output';
 import { CreateUserInput } from '../user/dto/create-user.input';
+import * as bcrypt from 'bcrypt';
 
 export type AuthenticatedUser = Omit<User, 'password'>;
 // export type LoginOutput = { accessToken: string };
@@ -25,8 +26,11 @@ export class AuthService {
     password: string,
   ): Promise<AuthenticatedUser | null> {
     const user = await this.userService.findOne({ email });
-
-    if (user && user.password === password) {
+    const desHashedPasswordIsEqual: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    );
+    if (user && desHashedPasswordIsEqual) {
       const userPicked = omit(user, 'password');
       return userPicked;
     }
@@ -62,6 +66,10 @@ export class AuthService {
     if (userFound) {
       throw ResourceExistsException('user');
     }
+
+    // hashing password
+    const salt = await bcrypt.genSalt();
+    userInput.password = await bcrypt.hash(userInput.password, salt);
 
     const user = await userRepo.save(userRepo.create(userInput));
 
