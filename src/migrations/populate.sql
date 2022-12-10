@@ -35,4 +35,4 @@ INSERT INTO general_parameters(id, name, value, description) VALUES
 INSERT INTO menus(id, name, json) values (1, 'Plato del dia','{"typeId": 1, "items": []}');
 
 INSERT INTO users(id, firstname, lastname,enabled, cedula, email,password,company_id,department_id, role_id)
-values(1, 'PACOME', 'ADMIN', true, 'PACOME', 'admin@pacome.com','admin', 1,1,3);
+values(1, 'PACOME', 'ADMIN', true, 'PACOME', 'admin@pacome.com','$2b$10$YNnMErlc0vqEN3eljle6zeBvHxoP/3ErUMKcosN4geIwW6Rq.uKKK', 1,1,3);

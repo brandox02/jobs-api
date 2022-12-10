@@ -9,10 +9,10 @@ export class Department extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ name: 'company_id' })
-  companyId: number;
+  @Column({ name: 'company_id', nullable: true })
+  companyId?: number;
 
   @ManyToOne(() => Company, (c) => c.departments)
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company?: Company;
 }

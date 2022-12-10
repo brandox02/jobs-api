@@ -5,7 +5,7 @@ import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { Between, FindOptionsOrder, ILike, Repository } from 'typeorm';
 import { AuthService } from '../auth/auth.service';
-// import { FileUploadService } from "../file-upload/file-upload.provider";
+import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import * as dayjs from 'dayjs';
 import { UserWhereInput } from './dto/user-where.input';
@@ -166,14 +166,22 @@ export class UserService {
     newPassword: string;
   }): Promise<string> {
     const user = await this.findOne({ id: userId });
-    if (user.password !== currentPassword) {
+    const isEqual = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isEqual) {
       return 'UMMATCH_PASS_CURR';
     }
     if (currentPassword === newPassword) {
       return 'MATCH_NEW_PASS_AND_OLD';
     }
+
+    const salt = await bcrypt.genSalt();
+
     await this.repo.save(
-      this.repo.create({ id: userId, password: newPassword }),
+      this.repo.create({
+        id: userId,
+        password: await bcrypt.hash(newPassword, salt),
+      }),
     );
     return '';
   }
