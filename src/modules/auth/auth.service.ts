@@ -37,29 +37,27 @@ export class AuthService {
     return null;
   }
 
-  async getToken(inputUser: AuthenticatedUser) {
+  async getToken(inputUser: AuthenticatedUser): Promise<string> {
     const user = await this.userService.findOne({ id: inputUser.id });
 
     const accessToken = this.jwtService.sign(JSON.stringify(user));
-    return {
-      accessToken,
-    };
+    return accessToken;
   }
 
   async login(user: AuthenticatedUser): Promise<LoginOutput> {
     const token = await this.getToken(user);
-    return token;
+
+    return { accessToken: token, user: { ...user, password: null } };
   }
 
-  async signin(userInput: CreateUserInput) {
-    const { email, cedula } = userInput;
+  async signin(userInput: CreateUserInput): Promise<LoginOutput> {
+    const { email } = userInput;
     const userRepo = this.dataSource.getRepository(User);
     const userFound = await userRepo
       .createQueryBuilder('user')
       .select('user')
-      .where('user.email = :email or user.cedula = :cedula', {
+      .where('user.email = :email', {
         email,
-        cedula,
       })
       .getOne();
 
@@ -73,7 +71,7 @@ export class AuthService {
 
     const user = await userRepo.save(userRepo.create(userInput));
 
-    const response = await this.getToken(user);
-    return response;
+    const token = await this.getToken(user);
+    return { accessToken: token, user };
   }
 }

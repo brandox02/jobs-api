@@ -9,7 +9,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
       inject: [ConfigService],
       driver: ApolloDriver,
       async useFactory(configService: ConfigService) {
-        const isProd = configService.get('NODE_ENV') === 'PRODUCTION';
+        const isProd = configService.get('NODE_ENV') === 'production';
         const plugins = isProd
           ? []
           : [ApolloServerPluginLandingPageLocalDefault];

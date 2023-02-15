@@ -3,10 +3,10 @@ version: "3.7"
 services:
   db:
     image: postgres:13-alpine
-    container_name: pacome-database
+    container_name: jobs-database
     restart: always
     environment:
-      POSTGRES_DB: pacome
+      POSTGRES_DB: jobs-app
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
     volumes:

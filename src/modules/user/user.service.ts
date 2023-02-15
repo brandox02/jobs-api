@@ -12,14 +12,14 @@ import { UserWhereInput } from './dto/user-where.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { FindAllInput } from 'src/common/FindAllInput.input';
-import { Paginate } from '../order/order.service';
 import { omit } from 'lodash';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateUser } from './dto/index.output';
+import { Paginate } from '../../common/paginate-types';
 
 @Injectable()
 export class UserService {
-  private relations: string[] = ['company', 'department', 'role'];
+  private relations: string[] = [];
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
     //private readonly fileUploadService: FileUploadService,
@@ -98,11 +98,11 @@ export class UserService {
         relations: this.relations,
         order,
       }),
-      metadata: {
-        perPage,
-        totalItems,
-        totalPages: Math.ceil(totalItems / perPage),
-      },
+      // metadata: {
+      //   perPage,
+      //   totalItems,
+      //   totalPages: Math.ceil(totalItems / perPage),
+      // },
     };
   }
 
@@ -145,15 +145,11 @@ export class UserService {
       userInput.imageUrl = url;
     }
 
-    if (userInput?.enabled) {
-      userInput.enableDate = dayjs().toDate();
-    }
-
     const userSaved = await this.repo.save(this.repo.create(userInput));
     const userFinded = await this.findOne({ id: userSaved.id });
-    const { accessToken } = await this.authService.getToken(userFinded);
+    const token = await this.authService.getToken(userFinded);
 
-    return { accessToken, user: userFinded };
+    return { accessToken: token, user: userFinded };
   }
 
   async updatePassword({

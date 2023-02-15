@@ -23,10 +23,6 @@ export class AuthResolver {
       throw new UnauthorizedException();
     }
 
-    if (!user.enabled) {
-      throw new Error('UNACTIVE_USER');
-    }
-
     const response = await this.authService.login(user);
 
     return response;
