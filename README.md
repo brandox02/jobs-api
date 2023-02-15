@@ -1,4 +1,4 @@
-## Pacome Api
+## Jobs Api
 
 First of all you need have installed docker & nodejs. Once you have them follow the following steps to run the api:
 
