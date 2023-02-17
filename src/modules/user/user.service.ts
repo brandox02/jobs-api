@@ -15,11 +15,11 @@ import { FindAllInput } from 'src/common/FindAllInput.input';
 import { omit } from 'lodash';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateUser } from './dto/index.output';
-import { Paginate } from '../../common/paginate-types';
+import { Paginate } from '../job/job.service';
 
 @Injectable()
 export class UserService {
-  private relations: string[] = [];
+  private relations: string[] = ['companyProfile', 'candidateProfile'];
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
     //private readonly fileUploadService: FileUploadService,
@@ -57,11 +57,7 @@ export class UserService {
     let copyWhere: any = { ...where };
     const serverMinutesDiff = new Date().getTimezoneOffset();
 
-    if (
-      copyWhere?.fromDate &&
-      copyWhere?.toDate &&
-      copyWhere?.filterByEnableDate !== null
-    ) {
+    if (false) {
       copyWhere.fromDate = dayjs(copyWhere.fromDate)
         .subtract(serverMinutesDiff, 'minutes')
         .toDate();
@@ -82,10 +78,6 @@ export class UserService {
       delete copyWhere.name;
     }
 
-    if (context.req.user.role.id !== 3) {
-      copyWhere.companyId = context.req.user.company.id;
-    }
-
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
     });
@@ -98,11 +90,11 @@ export class UserService {
         relations: this.relations,
         order,
       }),
-      // metadata: {
-      //   perPage,
-      //   totalItems,
-      //   totalPages: Math.ceil(totalItems / perPage),
-      // },
+      metadata: {
+        perPage,
+        totalItems,
+        totalPages: Math.ceil(totalItems / perPage),
+      },
     };
   }
 
@@ -126,12 +118,11 @@ export class UserService {
   }
 
   async create(user: CreateUserInput): Promise<User> {
-    await uniqueConstraint(this.repo, user, ['cedula', 'email']);
+    await uniqueConstraint(this.repo, user, ['email']);
 
     const userSaved = await this.repo.save(this.repo.create(user));
-    // if (!userSaved) throw new Error('User could not saved correctly');
+    if (!userSaved) throw new Error('User could not saved correctly');
     return this.repo.findOne({ where: { id: userSaved.id } });
-    // return this.authService.getToken(userSaved);
   }
 
   async update(user: UpdateUserInput): Promise<UpdateUser> {
@@ -146,7 +137,10 @@ export class UserService {
     }
 
     const userSaved = await this.repo.save(this.repo.create(userInput));
-    const userFinded = await this.findOne({ id: userSaved.id });
+    const userFinded = await this.repo.findOne({
+      where: { id: userSaved.id },
+      relations: ['companyProfile', 'candidateProfile'],
+    });
     const token = await this.authService.getToken(userFinded);
 
     return { accessToken: token, user: userFinded };

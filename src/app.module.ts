@@ -7,6 +7,7 @@ import { GraphqlModule } from './modules/graphql/graphql.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 import { DataSource } from 'typeorm';
+import { ListSelectsModule } from './modules/list-selects/list-selects.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DataSource } from 'typeorm';
     DatabaseModule,
     AuthModule,
     UserModule,
+    ListSelectsModule,
   ],
   controllers: [],
   providers: [],

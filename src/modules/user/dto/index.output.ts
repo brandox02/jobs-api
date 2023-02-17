@@ -1,6 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
-import { Paginate, PaginatedMetadata } from '../../../common/paginate-types';
 import { User } from '../entities/user.entity';
+// import { PaginatedMetadata } from '.././../../common/paginate-types';
 
 @ObjectType()
 export class GetUserInfo {
@@ -12,9 +12,16 @@ export class GetUserInfo {
 }
 
 @ObjectType()
-export class PaginatedUser implements Paginate<User> {
+export class PaginatedMetadata {
+  totalItems: number;
+  perPage: number;
+  totalPages: number;
+}
+
+@ObjectType()
+export class PaginatedUser {
   items: User[];
-  // metadata: PaginatedMetadata;
+  metadata: PaginatedMetadata;
 }
 
 @ObjectType()

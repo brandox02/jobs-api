@@ -9,9 +9,9 @@ export class PaginatedMetadata {
 
 export interface Paginate<T> {
   items: T[];
-  // metadata: {
-  //   totalItems: number;
-  //   perPage: number;
-  //   totalPages: number;
-  // };
+  metadata: {
+    totalItems: number;
+    perPage: number;
+    totalPages: number;
+  };
 }
