@@ -1,6 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { CandidateProfile } from './candidate-profile.entity';
 import { CompanyProfile } from './company-profile.entity';
 
@@ -38,4 +38,7 @@ export class User extends BaseEntity {
   @OneToOne(() => CandidateProfile, { cascade: true })
   @JoinColumn({ name: 'candidate_profile_id' })
   candidateProfile?: CandidateProfile;
+
+  // @OneToMany()
+  // applications: Aplica
 }

@@ -10,4 +10,4 @@ import { JobResolver } from './job.resolver';
   imports: [TypeOrmModule.forFeature([Job, User])],
   providers: [JobResolver, JobService, UtilsProvider],
 })
-export class OrderModule {}
+export class JobModule {}

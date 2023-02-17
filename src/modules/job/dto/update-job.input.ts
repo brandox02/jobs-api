@@ -8,6 +8,7 @@ export class UpdateJobInput {
   englishRequired?: boolean;
   workingModalityId?: number;
   employmentContractId?: number;
+  dailyWorkTimeId: number;
   experienceTimeId?: number;
   categoryId?: number;
   maxSalary?: number;

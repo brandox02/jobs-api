@@ -3,11 +3,13 @@ import { BaseEntity } from 'src/common/BaseEntity';
 import { Category } from 'src/entities/Category.entity';
 import { City } from 'src/entities/City.entity';
 import { Country } from 'src/entities/Country.entity';
+import { DailyWorkTime } from 'src/entities/DailyWorkTime.entity';
 import { EmploymentContract } from 'src/entities/EmploymentContract.entity';
 import { ExperienceTime } from 'src/entities/ExperienceTime.entity';
 import { JobStatus } from 'src/entities/JobStatus.entity';
 import { Tag } from 'src/entities/Tag.entity';
 import { WorkingModality } from 'src/entities/WorkingModality.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'jobs' })
@@ -21,6 +23,13 @@ export class Job extends BaseEntity {
 
   @Column({ name: 'english_required' })
   englishRequired: boolean;
+
+  @Column({ name: 'daily_work_time_id' })
+  dailyWorkTimeId: number;
+
+  @ManyToOne(() => DailyWorkTime)
+  @JoinColumn({ name: 'daily_work_time_id' })
+  dailyWorkTime: DailyWorkTime;
 
   @Column({ name: 'working_modality_id' })
   workingModalityId: number;
@@ -82,6 +91,13 @@ export class Job extends BaseEntity {
   @ManyToOne(() => JobStatus)
   @JoinColumn({ name: 'status_id' })
   status: JobStatus;
+
+  @Column({ name: 'created_user_id' })
+  createdUserId: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'created_user_id' })
+  createdUser: User;
 
   @OneToMany(() => Tag, (t) => t.job, {
     cascade: true,

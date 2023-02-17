@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 
 import { DataSource } from 'typeorm';
 import { ListSelectsModule } from './modules/list-selects/list-selects.module';
+import { JobModule } from './modules/job/job.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ListSelectsModule } from './modules/list-selects/list-selects.module';
     AuthModule,
     UserModule,
     ListSelectsModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],

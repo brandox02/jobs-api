@@ -15,7 +15,8 @@ import { FindAllInput } from 'src/common/FindAllInput.input';
 import { omit } from 'lodash';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateUser } from './dto/index.output';
-import { Paginate } from '../job/job.service';
+import { Paginate } from 'src/common/paginate-types';
+// import { Paginate } from '../job/job.service';
 
 @Injectable()
 export class UserService {

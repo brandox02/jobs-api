@@ -3,7 +3,6 @@ import { InputType } from '@nestjs/graphql';
 @InputType()
 export class CreateTagInput {
   name: string;
-  jobId: number;
 }
 
 @InputType()
@@ -14,6 +13,7 @@ export class CreateJobInput {
   workingModalityId: number;
   employmentContractId: number;
   experienceTimeId: number;
+  dailyWorkTimeId: number;
   categoryId: number;
   maxSalary: number;
   minSalary: number;
@@ -23,4 +23,5 @@ export class CreateJobInput {
   vigencyDays: number;
   statusId: number;
   tags: CreateTagInput[];
+  description: string;
 }

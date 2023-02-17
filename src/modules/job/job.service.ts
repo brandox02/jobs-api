@@ -1,36 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import * as dayjs from 'dayjs';
 import { FindAllInput } from 'src/common/FindAllInput.input';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
+import { Paginate } from 'src/common/paginate-types';
 import { UtilsProvider } from 'src/common/UtilsProvider';
-import {
-  Between,
-  DataSource,
-  EntityManager,
-  FindOptionsWhere,
-  ILike,
-  In,
-  Repository,
-} from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreateJobInput } from './dto/create-job.input';
 import { JobWhereInput } from './dto/job-where.input';
 import { UpdateJobInput } from './dto/update-job.input';
 import { Job } from './entities/job.entity';
 
-export interface Paginate<T> {
-  items: T[];
-  metadata: {
-    totalItems: number;
-    perPage: number;
-    totalPages: number;
-  };
-}
+// export interface Paginate<T> {
+//   items: T[];
+//   metadata: {
+//     totalItems: number;
+//     perPage: number;
+//     totalPages: number;
+//   };
+// }
 
 @Injectable()
 export class JobService {
-  private readonly relations = [];
+  private readonly relations = [
+    'dailyWorkTime',
+    'workingModality',
+    'employmentContract',
+    'experienceTime',
+    'category',
+    'country',
+    'city',
+    'city.country',
+    'status',
+    'tags',
+    'createdUser',
+  ];
   constructor(
     @InjectRepository(Job) private readonly repo: Repository<Job>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
@@ -38,9 +42,12 @@ export class JobService {
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
-  async create(orderInput: CreateJobInput): Promise<Job> {
-    const order = await this.repo.save(this.repo.create(orderInput));
-    return order;
+  async create(jobInput: CreateJobInput, context: any): Promise<Job> {
+    const user: User = context.req.user;
+    const copyJobInput = { ...jobInput, createdUserId: user.id };
+
+    const job = await this.repo.save(this.repo.create(copyJobInput));
+    return this.findOne({ id: job.id });
   }
 
   async find({
