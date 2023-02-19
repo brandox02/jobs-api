@@ -2,9 +2,9 @@ import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { Column, Entity } from 'typeorm';
 
-@Entity('aplication_status')
+@Entity('application_status')
 @ObjectType()
-export class AplicationStatus extends BaseEntity {
+export class ApplicationStatus extends BaseEntity {
   @Column()
   name: string;
 }

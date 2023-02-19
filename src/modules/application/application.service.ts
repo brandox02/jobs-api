@@ -4,13 +4,12 @@ import { FindAllInput } from 'src/common/FindAllInput.input';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { Paginate } from 'src/common/paginate-types';
 import { UtilsProvider } from 'src/common/UtilsProvider';
-import { Tag } from 'src/entities/Tag.entity';
 import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
-import { CreateJobInput } from './dto/create-job.input';
-import { JobWhereInput } from './dto/job-where.input';
-import { UpdateJobInput } from './dto/update-job.input';
-import { Job } from './entities/job.entity';
+import { CreateApplicationInput } from './dto/create-application.input';
+import { ApplicationWhereInput } from './dto/application-where.input';
+import { UpdateApplicationInput } from './dto/update-application.input';
+import { Application } from './entities/application.entity';
 
 // export interface Paginate<T> {
 //   items: T[];
@@ -22,7 +21,7 @@ import { Job } from './entities/job.entity';
 // }
 
 @Injectable()
-export class JobService {
+export class ApplicationService {
   private readonly relations = [
     'dailyWorkTime',
     'workingModality',
@@ -35,23 +34,29 @@ export class JobService {
     'status',
     'tags',
     'createdUser',
-    'applications',
-    'applications.status',
-    'applications.status',
   ];
   constructor(
-    @InjectRepository(Job) private readonly repo: Repository<Job>,
+    @InjectRepository(Application)
+    private readonly repo: Repository<Application>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly utils: UtilsProvider,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
-  async create(jobInput: CreateJobInput, context: any): Promise<Job> {
+  async create(
+    applicationInput: CreateApplicationInput,
+    context: any,
+  ): Promise<Application> {
     const user: User = context.req.user;
-    const copyJobInput = { ...jobInput, createdUserId: user.id };
+    const copyApplicationInput = {
+      ...applicationInput,
+      createdUserId: user.id,
+    };
 
-    const job = await this.repo.save(this.repo.create(copyJobInput));
-    return this.findOne({ id: job.id });
+    const application = await this.repo.save(
+      this.repo.create(copyApplicationInput),
+    );
+    return this.findOne({ id: application.id });
   }
 
   async find({
@@ -60,7 +65,7 @@ export class JobService {
     perPage,
     where,
     order,
-  }: FindAllInput<JobWhereInput>): Promise<Paginate<Job>> {
+  }: FindAllInput<ApplicationWhereInput>): Promise<Paginate<Application>> {
     const copyWhere: any = { ...where };
 
     const totalItems = await this.repo.count({
@@ -83,10 +88,10 @@ export class JobService {
     };
   }
 
-  async findOne(where: FindOptionsWhere<Job>): Promise<Job> {
+  async findOne(where: FindOptionsWhere<Application>): Promise<Application> {
     const withoutNull = this.utils.removeNullFields(where);
     if (!where || Object.keys(withoutNull).length == 0) {
-      throw NotFoundException('Job');
+      throw NotFoundException('Application');
     }
 
     const item = await this.repo.findOne({
@@ -95,24 +100,13 @@ export class JobService {
     });
 
     if (!item) {
-      throw NotFoundException('Job');
+      throw NotFoundException('Application');
     }
     return item;
   }
 
-  async update(input: UpdateJobInput): Promise<Job> {
-    await this.dataSource.transaction(async (manager) => {
-      const repo = manager.getRepository(Job);
-      const tagRepo = manager.getRepository(Tag);
-      const copyInput = { ...input };
-      const tags = [...copyInput.tags];
-
-      delete copyInput.tags;
-      await repo.save(this.repo.create(copyInput));
-      await tagRepo.delete({ jobId: copyInput.id });
-      await tagRepo.save(tagRepo.create(tags));
-    });
-
+  async update(input: UpdateApplicationInput): Promise<Application> {
+    await this.repo.save(this.repo.create(input));
     return this.findOne({ id: input.id });
   }
 }

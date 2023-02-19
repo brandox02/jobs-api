@@ -1,6 +1,13 @@
 import { InputType } from '@nestjs/graphql';
 
 @InputType()
+export class UpdateTagInput {
+  jobId?: number;
+  id?: number;
+  name: string;
+}
+
+@InputType()
 export class UpdateJobInput {
   id: number;
   name?: string;
@@ -17,5 +24,7 @@ export class UpdateJobInput {
   cityId?: number;
   location?: string;
   vigencyDays?: number;
-  statusId: number;
+  statusId?: number;
+  tags?: UpdateTagInput[];
+  description: string;
 }

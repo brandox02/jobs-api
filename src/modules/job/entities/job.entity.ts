@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { Category } from 'src/entities/Category.entity';
 import { City } from 'src/entities/City.entity';
@@ -9,6 +9,7 @@ import { ExperienceTime } from 'src/entities/ExperienceTime.entity';
 import { JobStatus } from 'src/entities/JobStatus.entity';
 import { Tag } from 'src/entities/Tag.entity';
 import { WorkingModality } from 'src/entities/WorkingModality.entity';
+import { Application } from 'src/modules/application/entities/application.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
@@ -17,6 +18,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 export class Job extends BaseEntity {
   @Column()
   name: string;
+
+  @Column({ nullable: true })
+  description: string;
 
   @Column({ name: 'contact_email' })
   contactEmail: string;
@@ -99,8 +103,13 @@ export class Job extends BaseEntity {
   @JoinColumn({ name: 'created_user_id' })
   createdUser: User;
 
+  @Field(() => [Tag])
   @OneToMany(() => Tag, (t) => t.job, {
-    cascade: true,
+    // cascade: true,
+    eager: true,
   })
   tags: Tag[];
+
+  @OneToMany(() => Application, (a) => a.job)
+  applications: Application[];
 }
