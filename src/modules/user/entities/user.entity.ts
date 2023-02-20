@@ -1,6 +1,7 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Resume } from '../dto/resume.output';
 import { CandidateProfile } from './candidate-profile.entity';
 import { CompanyProfile } from './company-profile.entity';
 
@@ -41,4 +42,7 @@ export class User extends BaseEntity {
 
   @Column({ name: 'is_candidate' })
   isCandidate: boolean;
+
+  @Column({ type: 'jsonb', nullable: true })
+  resume: Resume;
 }

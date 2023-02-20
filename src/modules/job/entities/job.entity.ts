@@ -19,7 +19,7 @@ export class Job extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column({ name: 'contact_email' })
@@ -104,7 +104,7 @@ export class Job extends BaseEntity {
   createdUser: User;
 
   @Field(() => [Tag])
-  @OneToMany(() => Tag, (t) => t.job)
+  @OneToMany(() => Tag, (t) => t.job, { nullable: true })
   tags: Tag[];
 
   @OneToMany(() => Application, (a) => a.job)

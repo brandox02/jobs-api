@@ -22,19 +22,7 @@ import { Application } from './entities/application.entity';
 
 @Injectable()
 export class ApplicationService {
-  private readonly relations = [
-    'dailyWorkTime',
-    'workingModality',
-    'employmentContract',
-    'experienceTime',
-    'category',
-    'country',
-    'city',
-    'city.country',
-    'status',
-    'tags',
-    'createdUser',
-  ];
+  private readonly relations = [];
   constructor(
     @InjectRepository(Application)
     private readonly repo: Repository<Application>,

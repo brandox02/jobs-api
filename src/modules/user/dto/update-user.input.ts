@@ -1,20 +1,22 @@
 import { InputType } from '@nestjs/graphql';
+import { ResumeInput } from './resume.input';
 
 @InputType()
 export class UpdateCandidateProfileInput {
-  id: number;
+  id?: number;
   professionalTitle: string;
   currentSalary: number;
   desiredSalary: number;
   genderId: number;
   bornDate: Date;
-  aboutMe: string;
+  aboutMe?: string;
   phone: string;
   countryId: number;
   cityId: number;
-  facebookUrl: string;
-  twitterUrl: string;
-  linkedinUrl: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
 }
 
 @InputType()
@@ -42,4 +44,5 @@ export class UpdateUserInput {
   imageUrl?: string;
   candidateProfile?: UpdateCandidateProfileInput;
   companyProfile?: UpdateCompanyProfileInput;
+  resume?: ResumeInput;
 }

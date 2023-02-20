@@ -21,7 +21,7 @@ export class CandidateProfile extends BaseEntity {
   bornDate: Date;
 
   @Column({ name: 'about_me', nullable: true })
-  aboutMe: string;
+  aboutMe?: string;
 
   @Column()
   phone: string;
@@ -33,11 +33,11 @@ export class CandidateProfile extends BaseEntity {
   cityId: number;
 
   @Column({ nullable: true, name: 'facebook_url' })
-  facebookUrl: string;
+  facebookUrl?: string;
 
   @Column({ nullable: true, name: 'twitter_url' })
-  twitterUrl: string;
+  twitterUrl?: string;
 
   @Column({ nullable: true, name: 'linkein_url' })
-  linkedinUrl: string;
+  linkedinUrl?: string;
 }

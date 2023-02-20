@@ -12,7 +12,7 @@ export class Tag extends BaseEntity {
   @Column({ name: 'job_id' })
   jobId: number;
 
-  @ManyToOne(() => Job, (j) => j.tags)
+  @ManyToOne(() => Job)
   @JoinColumn({ name: 'job_id' })
   job: Job;
 }
