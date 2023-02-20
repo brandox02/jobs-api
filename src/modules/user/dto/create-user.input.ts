@@ -6,4 +6,5 @@ export class CreateUserInput {
   password: string;
   firstname: string;
   lastname: string;
+  isCandidate: boolean;
 }

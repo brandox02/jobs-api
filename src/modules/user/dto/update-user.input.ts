@@ -19,7 +19,7 @@ export class UpdateCandidateProfileInput {
 
 @InputType()
 export class UpdateCompanyProfileInput {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   website?: string;

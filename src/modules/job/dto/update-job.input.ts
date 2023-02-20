@@ -15,7 +15,7 @@ export class UpdateJobInput {
   englishRequired?: boolean;
   workingModalityId?: number;
   employmentContractId?: number;
-  dailyWorkTimeId: number;
+  dailyWorkTimeId?: number;
   experienceTimeId?: number;
   categoryId?: number;
   maxSalary?: number;
@@ -26,5 +26,6 @@ export class UpdateJobInput {
   vigencyDays?: number;
   statusId?: number;
   tags?: UpdateTagInput[];
-  description: string;
+  description?: string;
+  enabled?: boolean;
 }

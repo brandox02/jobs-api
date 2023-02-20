@@ -19,7 +19,7 @@ export class Job extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
   description: string;
 
   @Column({ name: 'contact_email' })
@@ -104,12 +104,12 @@ export class Job extends BaseEntity {
   createdUser: User;
 
   @Field(() => [Tag])
-  @OneToMany(() => Tag, (t) => t.job, {
-    // cascade: true,
-    eager: true,
-  })
+  @OneToMany(() => Tag, (t) => t.job)
   tags: Tag[];
 
   @OneToMany(() => Application, (a) => a.job)
   applications: Application[];
+
+  @Column({ default: true })
+  enabled: boolean;
 }

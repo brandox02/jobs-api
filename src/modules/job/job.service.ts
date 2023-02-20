@@ -63,6 +63,8 @@ export class JobService {
   }: FindAllInput<JobWhereInput>): Promise<Paginate<Job>> {
     const copyWhere: any = { ...where };
 
+    copyWhere.enabled = true;
+
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
     });
@@ -89,6 +91,8 @@ export class JobService {
       throw NotFoundException('Job');
     }
 
+    withoutNull.enabled = true;
+
     const item = await this.repo.findOne({
       where: withoutNull,
       relations: this.relations,
@@ -101,18 +105,21 @@ export class JobService {
   }
 
   async update(input: UpdateJobInput): Promise<Job> {
-    await this.dataSource.transaction(async (manager) => {
+    const response = await this.dataSource.transaction(async (manager) => {
       const repo = manager.getRepository(Job);
-      const tagRepo = manager.getRepository(Tag);
       const copyInput = { ...input };
-      const tags = [...copyInput.tags];
 
-      delete copyInput.tags;
       await repo.save(this.repo.create(copyInput));
-      await tagRepo.delete({ jobId: copyInput.id });
-      await tagRepo.save(tagRepo.create(tags));
+      if (input.tags) {
+        const tagRepo = manager.getRepository(Tag);
+        const tags = [...copyInput.tags];
+        delete copyInput.tags;
+        await tagRepo.delete({ jobId: copyInput.id });
+        await tagRepo.save(tagRepo.create(tags));
+      }
+      return this.findOne({ id: input.id });
     });
 
-    return this.findOne({ id: input.id });
+    return response;
   }
 }
