@@ -7,6 +7,9 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserWhereInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
+import { Resume } from './dto/resume.output';
 
 @Resolver()
 export class UserResolver {
@@ -14,6 +17,7 @@ export class UserResolver {
     private readonly service: UserService,
     // private readonly utils: UtilsProvider,
     @InjectDataSource() private readonly dataSource: DataSource,
+    private readonly cloudinary: CloudinaryService,
   ) {}
 
   @Query(() => GetUserInfo)
@@ -48,6 +52,16 @@ export class UserResolver {
 
   @Mutation(() => UpdateUser)
   async updateUser(@Args('input') input: UpdateUserInput): Promise<UpdateUser> {
+    const itemCopy: any = { imageUrl: null, ...input };
+    if (input.image) {
+      const { public_id, url } = await this.cloudinary.uploadImage(
+        itemCopy?.image,
+        itemCopy?.imageId,
+      );
+      itemCopy.imageUrl = url;
+      itemCopy.imageId = public_id;
+      delete itemCopy?.image;
+    }
     return this.service.update(input);
   }
 
@@ -67,5 +81,14 @@ export class UserResolver {
       currentPassword,
       newPassword,
     });
+  }
+
+  @Query(() => Resume)
+  async getResume(@Args('userId') userId: number) {
+    const user = await this.service.findOne({ id: userId });
+    if (!user) {
+      throw NotFoundException('user');
+    }
+    return user.resume;
   }
 }

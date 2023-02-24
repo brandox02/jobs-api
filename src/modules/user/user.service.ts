@@ -127,7 +127,7 @@ export class UserService {
   }
 
   async update(user: UpdateUserInput): Promise<UpdateUser> {
-    const userInput = { ...user };
+    const userInput = { ...user, imageUrl: null };
     if (user?.image) {
       const userFound = await this.findOne({ id: user.id });
       const { url } = await this.cloudinary.uploadImage(
@@ -137,7 +137,9 @@ export class UserService {
       userInput.imageUrl = url;
     }
 
-    const userSaved = await this.repo.save(this.repo.create(userInput));
+    const userSaved: any = await this.repo.save(
+      this.repo.create(userInput as any),
+    );
     const userFinded = await this.repo.findOne({
       where: { id: userSaved.id },
       relations: ['companyProfile', 'candidateProfile'],

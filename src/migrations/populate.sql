@@ -66,3 +66,7 @@ INSERT INTO cities(name, country_id) values ('San Jose de Ocoa', 1);
 INSERT INTO cities(name, country_id) values ('Santa Cruz de Barahona', 1);
 INSERT INTO cities(name, country_id) values ('Santiago de los Caballeros', 1);
 INSERT INTO cities(name, country_id) values ('Santo Domingo', 1);
+
+INSERT INTO educations(1, name) values (1, 'Graduado');
+INSERT INTO educations(1, name) values (2, 'Maestría');
+INSERT INTO educations(1, name) values (3, 'Doctorado');

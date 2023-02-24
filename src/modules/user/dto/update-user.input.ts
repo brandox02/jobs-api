@@ -8,7 +8,7 @@ export class UpdateCandidateProfileInput {
   currentSalary: number;
   desiredSalary: number;
   genderId: number;
-  bornDate: Date;
+  bornDate: string;
   aboutMe?: string;
   phone: string;
   countryId: number;
@@ -41,7 +41,7 @@ export class UpdateUserInput {
   firstname?: string;
   lastname?: string;
   image?: string;
-  imageUrl?: string;
+  imageId?: string;
   candidateProfile?: UpdateCandidateProfileInput;
   companyProfile?: UpdateCompanyProfileInput;
   resume?: ResumeInput;

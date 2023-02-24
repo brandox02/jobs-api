@@ -8,29 +8,30 @@ export class EducationList {
 
 @ObjectType()
 export class ResumeLaboralExperiences {
-  id: number;
+  id: string;
   companyName: string;
   charge: string;
   isYourCurrentJob: boolean;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   description: string;
 }
 
 @ObjectType()
 export class ResumeEducation {
-  id: number;
+  id: string;
   educationId: number;
+  education: EducationList;
   title: string;
   institution: string;
   isStudyingHere: boolean;
   startDate: string;
-  endDate: string;
+  endDate?: string;
 }
 
 @ObjectType()
 export class ResumeProject {
-  id: number;
+  id: string;
   name: string;
   customer: string;
   isFinished: boolean;
@@ -41,10 +42,12 @@ export class ResumeProject {
 
 @ObjectType()
 export class Resume {
-  id: number;
+  id: string;
   resume: string;
-  keyAbilities: string[];
+  keySkills: string[];
   laboralExperiences: ResumeLaboralExperiences[];
-  education: ResumeEducation[];
+  educations: ResumeEducation[];
   projects: ResumeProject[];
+  imageUrl?: string;
+  imageId?: string;
 }

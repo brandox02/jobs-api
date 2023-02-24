@@ -3,6 +3,7 @@ import { Category } from 'src/entities/Category.entity';
 import { City } from 'src/entities/City.entity';
 import { Country } from 'src/entities/Country.entity';
 import { DailyWorkTime } from 'src/entities/DailyWorkTime.entity';
+import { Education } from 'src/entities/Education.entity';
 import { EmploymentContract } from 'src/entities/EmploymentContract.entity';
 import { ExperienceTime } from 'src/entities/ExperienceTime.entity';
 import { Gender } from 'src/entities/Gender.entity';
@@ -62,5 +63,10 @@ export class ListSelectsResolver {
   @Query(() => [WorkingModality])
   async workingModalities(): Promise<WorkingModality[]> {
     return this.service.findAll({ entity: WorkingModality });
+  }
+
+  @Query(() => [Education])
+  async educations(): Promise<Education[]> {
+    return this.service.findAll({ entity: Education });
   }
 }

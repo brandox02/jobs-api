@@ -1,30 +1,37 @@
 import { InputType } from '@nestjs/graphql';
 
 @InputType()
-export class ResumeLaboralExperiencesInput {
+export class EducationListInput {
   id: number;
+  name: string;
+}
+
+@InputType()
+export class ResumeLaboralExperiencesInput {
+  id: string;
   companyName: string;
   charge: string;
   isYourCurrentJob: boolean;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   description: string;
 }
 
 @InputType()
 export class ResumeEducationInput {
-  id: number;
+  id: string;
   educationId: number;
+  education: EducationListInput;
   title: string;
   institution: string;
   isStudyingHere: boolean;
   startDate: string;
-  endDate: string;
+  endDate?: string;
 }
 
 @InputType()
 export class ResumeProjectInput {
-  id: number;
+  id: string;
   name: string;
   customer: string;
   isFinished: boolean;
@@ -35,10 +42,11 @@ export class ResumeProjectInput {
 
 @InputType()
 export class ResumeInput {
-  id: number;
+  id: string;
   resume: string;
-  keyAbilities: string[];
+  keySkills: string[];
   laboralExperiences: ResumeLaboralExperiencesInput[];
-  education: ResumeEducationInput[];
+  educations: ResumeEducationInput[];
   projects: ResumeProjectInput[];
+  image?: string;
 }

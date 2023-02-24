@@ -1,6 +1,8 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
-import { Column, Entity } from 'typeorm';
+import { City } from 'src/entities/City.entity';
+import { Country } from 'src/entities/Country.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('company_profiles')
 @ObjectType()
@@ -20,8 +22,16 @@ export class CompanyProfile extends BaseEntity {
   @Column({ name: 'country_id' })
   countryId: number;
 
+  @ManyToOne(() => Country, { eager: true })
+  @JoinColumn({ name: 'country_id' })
+  country: Country;
+
   @Column({ name: 'city_id' })
   cityId: number;
+
+  @ManyToOne(() => City, { eager: true })
+  @JoinColumn({ name: 'city_id' })
+  city: City;
 
   @Column()
   description: string;
