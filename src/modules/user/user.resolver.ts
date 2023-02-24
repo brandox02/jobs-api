@@ -52,17 +52,21 @@ export class UserResolver {
 
   @Mutation(() => UpdateUser)
   async updateUser(@Args('input') input: UpdateUserInput): Promise<UpdateUser> {
-    const itemCopy: any = { imageUrl: null, ...input };
-    if (input.image) {
+    const itemCopy: any = { ...input };
+    if (itemCopy.resume.image) {
       const { public_id, url } = await this.cloudinary.uploadImage(
         itemCopy?.image,
         itemCopy?.imageId,
       );
-      itemCopy.imageUrl = url;
-      itemCopy.imageId = public_id;
+      itemCopy.resume.imageUrl = url;
+      itemCopy.resume.imageId = public_id;
       delete itemCopy?.image;
+    } else {
+      const user = await this.service.findOne({ id: input.id });
+      itemCopy.imageUrl = user.imageUrl;
+      itemCopy.imageId = user.imageId;
     }
-    return this.service.update(input);
+    return this.service.update(itemCopy);
   }
 
   @Mutation(() => User)
@@ -83,7 +87,7 @@ export class UserResolver {
     });
   }
 
-  @Query(() => Resume)
+  @Query(() => Resume, { nullable: true })
   async getResume(@Args('userId') userId: number) {
     const user = await this.service.findOne({ id: userId });
     if (!user) {
