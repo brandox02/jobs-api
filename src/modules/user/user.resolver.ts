@@ -53,13 +53,30 @@ export class UserResolver {
   @Mutation(() => UpdateUser)
   async updateUser(@Args('input') input: UpdateUserInput): Promise<UpdateUser> {
     const itemCopy: any = { ...input };
-    if (itemCopy.resume.image) {
+    if (itemCopy?.resume) {
+      if (itemCopy.resume?.image) {
+        const { public_id, url } = await this.cloudinary.uploadImage(
+          itemCopy?.resume.image,
+          itemCopy?.resume?.imageId,
+        );
+        itemCopy.resume.imageUrl = url;
+        itemCopy.resume.imageId = public_id;
+        delete itemCopy?.resume?.image;
+      } else {
+        const user = await this.service.findOne({ id: input.id });
+        itemCopy.resume.imageUrl = user.resume.imageUrl;
+        itemCopy.resume.imageId = user.resume.imageId;
+      }
+    }
+
+    if (itemCopy.image) {
       const { public_id, url } = await this.cloudinary.uploadImage(
         itemCopy?.image,
         itemCopy?.imageId,
       );
-      itemCopy.resume.imageUrl = url;
-      itemCopy.resume.imageId = public_id;
+      itemCopy.imageUrl = url;
+      itemCopy.imageId = public_id;
+      console.log('response cloudinary: ', { public_id, url });
       delete itemCopy?.image;
     } else {
       const user = await this.service.findOne({ id: input.id });

@@ -49,4 +49,5 @@ export class ResumeInput {
   educations: ResumeEducationInput[];
   projects: ResumeProjectInput[];
   image?: string;
+  imageId?: string;
 }
