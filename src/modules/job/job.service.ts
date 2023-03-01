@@ -8,6 +8,7 @@ import { Tag } from 'src/entities/Tag.entity';
 import {
   DataSource,
   FindOptionsWhere,
+  ILike,
   LessThan,
   LessThanOrEqual,
   MoreThan,
@@ -98,6 +99,9 @@ export class JobService {
     }
     if (where.maxSalary) {
       copyWhere.maxSalary = LessThanOrEqual(where.maxSalary);
+    }
+    if (where.name) {
+      copyWhere.name = ILike(`%${copyWhere.name}%`);
     }
 
     copyWhere.enabled = true;

@@ -13,4 +13,5 @@ export class JobWhereInput {
   minSalary?: number;
   maxSalary?: number;
   experienceTimeId?: number;
+  name?: string;
 }
