@@ -5,7 +5,15 @@ import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { Paginate } from 'src/common/paginate-types';
 import { UtilsProvider } from 'src/common/UtilsProvider';
 import { Tag } from 'src/entities/Tag.entity';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindOptionsWhere,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreateJobInput } from './dto/create-job.input';
 import { JobWhereInput } from './dto/job-where.input';
@@ -85,8 +93,14 @@ export class JobService {
   }: FindAllInput<JobWhereInput>): Promise<Paginate<Job>> {
     const copyWhere: any = { ...where };
 
-    copyWhere.enabled = true;
+    if (where.minSalary) {
+      copyWhere.minSalary = MoreThanOrEqual(where.minSalary);
+    }
+    if (where.maxSalary) {
+      copyWhere.maxSalary = LessThanOrEqual(where.maxSalary);
+    }
 
+    copyWhere.enabled = true;
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
     });
