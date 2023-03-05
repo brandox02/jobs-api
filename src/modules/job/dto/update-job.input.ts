@@ -29,3 +29,9 @@ export class UpdateJobInput {
   description?: string;
   enabled?: boolean;
 }
+
+@InputType()
+export class ApplyJobInput {
+  jobId: number;
+  userId: number;
+}

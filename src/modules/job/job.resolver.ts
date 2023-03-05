@@ -3,9 +3,11 @@ import { JobService } from './job.service';
 import { PaginatedJob } from './dto/paginated-job.output';
 import { CreateJobInput } from './dto/create-job.input';
 import { JobWhereInput } from './dto/job-where.input';
-import { UpdateJobInput } from './dto/update-job.input';
+import { ApplyJobInput, UpdateJobInput } from './dto/update-job.input';
 import { Job } from './entities/job.entity';
 import { Paginate } from 'src/common/paginate-types';
+import { PaginatedApplication } from '../application/dto/paginated-application.output';
+import { ApplicationWhereInput } from '../application/dto/application-where.input';
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -43,5 +45,10 @@ export class JobResolver {
   @Mutation(() => Job)
   async updateJob(@Args('input') updateJobInput: UpdateJobInput): Promise<Job> {
     return this.jobService.update(updateJobInput);
+  }
+
+  @Mutation(() => Boolean)
+  async applyJob(@Args('input') input: ApplyJobInput): Promise<boolean> {
+    return this.jobService.applyJob(input);
   }
 }

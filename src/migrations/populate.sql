@@ -70,3 +70,9 @@ INSERT INTO cities(name, country_id) values ('Santo Domingo', 1);
 INSERT INTO educations(1, name) values (1, 'Graduado');
 INSERT INTO educations(1, name) values (2, 'Maestría');
 INSERT INTO educations(1, name) values (3, 'Doctorado');
+
+
+INSERT INTO application_status(id,name) VALUES (1, 'En proceso');
+INSERT INTO application_status(id,name) VALUES (2, 'Leida');
+INSERT INTO application_status(id,name) VALUES (3, 'Rechazada');
+INSERT INTO application_status(id,name) VALUES (4, 'Aprobada');

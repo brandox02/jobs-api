@@ -22,7 +22,26 @@ import { Application } from './entities/application.entity';
 
 @Injectable()
 export class ApplicationService {
-  private readonly relations = [];
+  private readonly relations = [
+    'job',
+    'user',
+    'job.createdUser',
+    'job.createdUser.companyProfile',
+    'job.dailyWorkTime',
+    'job.workingModality',
+    'job.employmentContract',
+    'job.experienceTime',
+    'job.category',
+    'job.country',
+    'job.city',
+    'job.city.country',
+    'job.status',
+    'job.tags',
+    'job.createdUser',
+    'job.applications',
+    'job.applications.status',
+    'job.applications.status',
+  ];
   constructor(
     @InjectRepository(Application)
     private readonly repo: Repository<Application>,
@@ -54,7 +73,12 @@ export class ApplicationService {
     where,
     order,
   }: FindAllInput<ApplicationWhereInput>): Promise<Paginate<Application>> {
-    const copyWhere: any = { ...where };
+    const copyWhere: any = { ...where, job: {} };
+
+    if (copyWhere.createdUserId) {
+      copyWhere.job.createdUserId = copyWhere.createdUserId;
+      delete copyWhere.createdUserId;
+    }
 
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),

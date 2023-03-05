@@ -15,10 +15,11 @@ import {
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
+import { Application } from '../application/entities/application.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateJobInput } from './dto/create-job.input';
 import { JobWhereInput } from './dto/job-where.input';
-import { UpdateJobInput } from './dto/update-job.input';
+import { ApplyJobInput, UpdateJobInput } from './dto/update-job.input';
 import { Job } from './entities/job.entity';
 
 // export interface Paginate<T> {
@@ -51,6 +52,8 @@ export class JobService {
   constructor(
     @InjectRepository(Job) private readonly repo: Repository<Job>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(Application)
+    private readonly applicationRepo: Repository<Application>,
     private readonly utils: UtilsProvider,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
@@ -161,5 +164,14 @@ export class JobService {
     });
 
     return response;
+  }
+
+  async applyJob(input: ApplyJobInput) {
+    console.log({ input });
+    await this.applicationRepo.save(
+      this.applicationRepo.create({ userId: 3, jobId: 1, statusId: 1 }),
+    );
+
+    return true;
   }
 }
