@@ -2,14 +2,8 @@ import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { City } from 'src/entities/City.entity';
 import { Country } from 'src/entities/Country.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToMany,
-  ManyToOne,
-  OneToOne,
-} from 'typeorm';
+import { Gender } from 'src/entities/Gender.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('candidate_profiles')
 @ObjectType()
@@ -25,6 +19,10 @@ export class CandidateProfile extends BaseEntity {
 
   @Column({ name: 'gender_id' })
   genderId: number;
+
+  @ManyToOne(() => Gender, { eager: true })
+  @JoinColumn({ name: 'gender_id' })
+  gender: Gender;
 
   @Column({ name: 'born_date' })
   bornDate: string;
@@ -55,6 +53,9 @@ export class CandidateProfile extends BaseEntity {
   @Column({ nullable: true, name: 'twitter_url' })
   twitterUrl?: string;
 
-  @Column({ nullable: true, name: 'linkein_url' })
+  @Column({ nullable: true, name: 'linkedin_url' })
   linkedinUrl?: string;
+
+  @Column({ nullable: true, name: 'github_url' })
+  githubUrl?: string;
 }

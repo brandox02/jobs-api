@@ -169,7 +169,7 @@ export class JobService {
   async applyJob(input: ApplyJobInput) {
     console.log({ input });
     await this.applicationRepo.save(
-      this.applicationRepo.create({ userId: 3, jobId: 1, statusId: 1 }),
+      this.applicationRepo.create({ ...input, statusId: 1 }),
     );
 
     return true;

@@ -5,4 +5,5 @@ export class ApplicationWhereInput {
   id?: number;
   userId?: number;
   createdUserId?: number;
+  jobId?: number;
 }
