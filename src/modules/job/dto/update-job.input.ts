@@ -1,4 +1,5 @@
 import { InputType } from '@nestjs/graphql';
+import { RequirementInput } from './requirement.input';
 
 @InputType()
 export class UpdateTagInput {
@@ -26,8 +27,9 @@ export class UpdateJobInput {
   vigencyDays?: number;
   statusId?: number;
   tags?: UpdateTagInput[];
-  description?: string;
+  description2?: string;
   enabled?: boolean;
+  requirements?: RequirementInput[];
 }
 
 @InputType()

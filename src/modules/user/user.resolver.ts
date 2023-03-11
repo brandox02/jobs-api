@@ -76,7 +76,6 @@ export class UserResolver {
       );
       itemCopy.imageUrl = url;
       itemCopy.imageId = public_id;
-      console.log('response cloudinary: ', { public_id, url });
       delete itemCopy?.image;
     } else {
       const user = await this.service.findOne({ id: input.id });

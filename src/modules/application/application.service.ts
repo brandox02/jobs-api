@@ -64,6 +64,7 @@ export class ApplicationService {
     const application = await this.repo.save(
       this.repo.create(copyApplicationInput),
     );
+
     return this.findOne({ id: application.id });
   }
 

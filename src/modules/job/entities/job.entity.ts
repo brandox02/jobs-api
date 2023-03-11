@@ -12,6 +12,7 @@ import { WorkingModality } from 'src/entities/WorkingModality.entity';
 import { Application } from 'src/modules/application/entities/application.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Requirement } from '../dto/requirement.output';
 
 @Entity({ name: 'jobs' })
 @ObjectType()
@@ -19,8 +20,8 @@ export class Job extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
-  description: string;
+  @Column({ name: 'description2', default: '' })
+  description2: string;
 
   @Column({ name: 'contact_email' })
   contactEmail: string;
@@ -109,6 +110,9 @@ export class Job extends BaseEntity {
 
   @OneToMany(() => Application, (a) => a.job)
   applications: Application[];
+
+  @Column({ type: 'jsonb', nullable: true, default: [] })
+  requirements: Requirement[];
 
   @Column({ default: true })
   enabled: boolean;

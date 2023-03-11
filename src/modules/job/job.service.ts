@@ -48,6 +48,7 @@ export class JobService {
     'applications',
     'applications.status',
     'applications.status',
+    'createdUser.companyProfile',
   ];
   constructor(
     @InjectRepository(Job) private readonly repo: Repository<Job>,
@@ -167,7 +168,6 @@ export class JobService {
   }
 
   async applyJob(input: ApplyJobInput) {
-    console.log({ input });
     await this.applicationRepo.save(
       this.applicationRepo.create({ ...input, statusId: 1 }),
     );
