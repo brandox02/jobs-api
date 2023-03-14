@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { isNil, omitBy } from 'lodash';
+import { Category } from 'src/entities/Category.entity';
 
 import { DataSource } from 'typeorm';
+import { Job } from '../job/entities/job.entity';
 
 interface FindAll {
   entity: any;
@@ -23,5 +25,18 @@ export class ListSelectsService {
     });
 
     return items as T[];
+  }
+
+  async getCategories(): Promise<Array<Category>> {
+    const categories = await this.dataSource.getRepository(Category).find();
+    const jobRepo = this.dataSource.getRepository(Job);
+    return Promise.all(
+      categories.map(async (category) => {
+        const count = await jobRepo.count({
+          where: { categoryId: category.id },
+        });
+        return { ...category, count };
+      }),
+    );
   }
 }

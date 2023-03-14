@@ -7,4 +7,9 @@ import { Column, Entity } from 'typeorm';
 export class Category extends BaseEntity {
   @Column()
   name: string;
+
+  @Column({ name: 'classname_icon', nullable: true })
+  classnameIcon?: string;
+
+  count?: number;
 }

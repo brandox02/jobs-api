@@ -47,7 +47,7 @@ export class JobService {
     'createdUser',
     'applications',
     'applications.status',
-    'applications.status',
+    'applications.user',
     'createdUser.companyProfile',
   ];
   constructor(

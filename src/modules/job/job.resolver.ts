@@ -8,6 +8,7 @@ import { Job } from './entities/job.entity';
 import { Paginate } from 'src/common/paginate-types';
 import { PaginatedApplication } from '../application/dto/paginated-application.output';
 import { ApplicationWhereInput } from '../application/dto/application-where.input';
+import { isPublicResolver } from '../auth/jwtStratedy.guard';
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -20,12 +21,12 @@ export class JobResolver {
   ): Promise<Job> {
     return this.jobService.create(createJobInput, context);
   }
-
+  @isPublicResolver()
   @Query(() => Job)
   async job(@Args('where') where: JobWhereInput): Promise<Job> {
     return this.jobService.findOne(where);
   }
-
+  @isPublicResolver()
   @Query(() => PaginatedJob)
   async jobs(
     @Args('page', { defaultValue: 1 }) page: number,
