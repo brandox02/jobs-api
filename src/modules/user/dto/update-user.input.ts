@@ -6,7 +6,7 @@ export class UpdateCandidateProfileInput {
   id?: number;
   professionalTitle: string;
   currentSalary: number;
-  desiredSalary: number;
+  desiredSalary?: number;
   genderId: number;
   bornDate: string;
   aboutMe?: string;

@@ -9,6 +9,8 @@ import { UserService } from '../user/user.service';
 import { LoginOutput } from './dto/index.output';
 import { CreateUserInput } from '../user/dto/create-user.input';
 import * as bcrypt from 'bcrypt';
+import { InputType } from '@nestjs/graphql';
+import { ChangePasswordInput } from './dto/ChangePassword.input';
 
 export type AuthenticatedUser = Omit<User, 'password'>;
 // export type LoginOutput = { accessToken: string };
@@ -73,5 +75,32 @@ export class AuthService {
 
     const token = await this.getToken(user);
     return { accessToken: token, user };
+  }
+
+  async changePassword(input: ChangePasswordInput) {
+    const user = await this.userService.findOne({ email: input.email });
+
+    const isEqual = await bcrypt.compare(input.oldPassword, user.password);
+
+    if (!isEqual) {
+      throw new Error('UMMATCH_PASS_CURR');
+    }
+    if (input.oldPassword === input.newPassword) {
+      throw new Error('MATCH_NEW_PASS_AND_OLD');
+    }
+    if (input.copyNewPassword !== input.newPassword) {
+      throw new Error('UNMATCH_NEW_PASSWORD_AND_COPY_NEW_PASSWORD');
+    }
+
+    const salt = await bcrypt.genSalt();
+    const userRepo = this.dataSource.getRepository(User);
+    await userRepo.save(
+      userRepo.create({
+        id: user.id,
+        password: await bcrypt.hash(input.newPassword, salt),
+      }),
+    );
+
+    return 'SUCCESS';
   }
 }

@@ -14,8 +14,8 @@ export class CandidateProfile extends BaseEntity {
   @Column({ name: 'current_salary' })
   currentSalary: number;
 
-  @Column({ name: 'desired_salary' })
-  desiredSalary: number;
+  @Column({ name: 'desired_salary', nullable: true })
+  desiredSalary?: number;
 
   @Column({ name: 'gender_id' })
   genderId: number;
