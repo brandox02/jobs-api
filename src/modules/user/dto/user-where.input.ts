@@ -7,4 +7,5 @@ export class UserWhereInput {
   password?: string;
   firstname?: string;
   lastname?: string;
+  isCandidate?: boolean;
 }

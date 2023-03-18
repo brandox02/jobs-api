@@ -3,16 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { uniqueConstraint } from 'src/common/uniqueContraint';
 import { NotFoundException } from 'src/common/GqlExeptions/NotFoundExeption';
 import { UtilsProvider } from 'src/common/UtilsProvider';
-import { Between, FindOptionsOrder, ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AuthService } from '../auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
-import * as dayjs from 'dayjs';
 import { UserWhereInput } from './dto/user-where.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { FindAllInput } from 'src/common/FindAllInput.input';
-import { omit } from 'lodash';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateUser } from './dto/index.output';
 import { Paginate } from 'src/common/paginate-types';
@@ -20,7 +18,11 @@ import { Paginate } from 'src/common/paginate-types';
 
 @Injectable()
 export class UserService {
-  private relations: string[] = ['companyProfile', 'candidateProfile'];
+  private relations: string[] = [
+    'companyProfile',
+    'candidateProfile',
+    'applications',
+  ];
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
     //private readonly fileUploadService: FileUploadService,
@@ -30,24 +32,6 @@ export class UserService {
     private readonly cloudinary: CloudinaryService,
   ) {}
 
-  async findAll(
-    where: UserWhereInput,
-    order: FindOptionsOrder<User> = { createdAt: 'ASC' },
-    context: any,
-  ): Promise<User[]> {
-    const filteredWhere = this.utils.removeNullFields(where);
-
-    if (context.req.user.role.id !== 3) {
-      filteredWhere.companyId = filteredWhere.req.user.company.id;
-    }
-
-    const users = await this.repo.find({
-      where: filteredWhere,
-      order,
-    });
-    return users;
-  }
-
   async find({
     page,
     perPage,
@@ -55,37 +39,13 @@ export class UserService {
     order,
     context,
   }: FindAllInput<UserWhereInput>): Promise<Paginate<User>> {
-    let copyWhere: any = { ...where };
-    const serverMinutesDiff = new Date().getTimezoneOffset();
-
-    if (false) {
-      copyWhere.fromDate = dayjs(copyWhere.fromDate)
-        .subtract(serverMinutesDiff, 'minutes')
-        .toDate();
-
-      copyWhere.toDate = dayjs(copyWhere.toDate)
-        .add(serverMinutesDiff, 'minutes')
-        .add(1, 'day')
-        .toDate();
-
-      copyWhere[copyWhere?.filterByEnableDate ? 'enableDate' : 'createdAt'] =
-        Between(copyWhere.fromDate, copyWhere.toDate);
-
-      copyWhere = omit(copyWhere, ['fromDate', 'toDate', 'filterByEnableDate']);
-    }
-
-    if (copyWhere.name) {
-      copyWhere.firstname = ILike(`%${copyWhere.name}%`);
-      delete copyWhere.name;
-    }
-
     const totalItems = await this.repo.count({
-      where: this.utils.removeNullFields(copyWhere),
+      where: this.utils.removeNullFields(where),
     });
 
     return {
       items: await this.repo.find({
-        where: this.utils.removeNullFields(copyWhere),
+        where: this.utils.removeNullFields(where),
         skip: perPage * page,
         take: perPage,
         relations: this.relations,

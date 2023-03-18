@@ -42,14 +42,6 @@ export class UserResolver {
     return response;
   }
 
-  @Query(() => [User])
-  async usersList(
-    @Args('where', { defaultValue: {} }) where: UserWhereInput,
-    @Context() context: any,
-  ) {
-    return this.service.findAll(where, { id: 'DESC' }, context);
-  }
-
   @Mutation(() => UpdateUser)
   async updateUser(@Args('input') input: UpdateUserInput): Promise<UpdateUser> {
     const itemCopy: any = { ...input };
