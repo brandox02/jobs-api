@@ -17,6 +17,7 @@ export class UpdateCandidateProfileInput {
   twitterUrl?: string;
   linkedinUrl?: string;
   githubUrl?: string;
+  belongToCvBank?: boolean;
 }
 
 @InputType()

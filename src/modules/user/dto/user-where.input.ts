@@ -8,4 +8,5 @@ export class UserWhereInput {
   firstname?: string;
   lastname?: string;
   isCandidate?: boolean;
+  belongToCvBank?: boolean;
 }

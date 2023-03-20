@@ -58,4 +58,7 @@ export class CandidateProfile extends BaseEntity {
 
   @Column({ nullable: true, name: 'github_url' })
   githubUrl?: string;
+
+  @Column({ nullable: true, default: false, name: 'belong_to_cv_bank' })
+  belongToCvBank?: boolean;
 }

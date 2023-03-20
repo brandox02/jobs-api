@@ -109,6 +109,8 @@ export class JobService {
     }
 
     copyWhere.enabled = true;
+    copyWhere.statusId = copyWhere?.statusId || 2;
+
     const totalItems = await this.repo.count({
       where: this.utils.removeNullFields(copyWhere),
     });

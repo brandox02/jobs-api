@@ -1,6 +1,7 @@
 import { ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/BaseEntity';
 import { Application } from 'src/modules/application/entities/application.entity';
+import { Job } from 'src/modules/job/entities/job.entity';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { Resume } from '../dto/resume.output';
 import { CandidateProfile } from './candidate-profile.entity';
@@ -43,6 +44,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Application, (d) => d.user)
   applications: Application[];
+
+  @OneToMany(() => Job, (j) => j.createdUser)
+  createdJobs: Job[];
 
   @Column({ name: 'is_candidate' })
   isCandidate: boolean;

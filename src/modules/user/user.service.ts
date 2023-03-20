@@ -22,6 +22,8 @@ export class UserService {
     'companyProfile',
     'candidateProfile',
     'applications',
+    'createdJobs',
+    'createdJobs.applications',
   ];
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
@@ -39,13 +41,19 @@ export class UserService {
     order,
     context,
   }: FindAllInput<UserWhereInput>): Promise<Paginate<User>> {
+    const copyWhere: any = { ...where };
+
+    if (where.belongToCvBank) {
+      copyWhere.candidateProfile = { belongToCvBank: where.belongToCvBank };
+      delete copyWhere.belongToCvBank;
+    }
     const totalItems = await this.repo.count({
-      where: this.utils.removeNullFields(where),
+      where: this.utils.removeNullFields(copyWhere),
     });
 
     return {
       items: await this.repo.find({
-        where: this.utils.removeNullFields(where),
+        where: this.utils.removeNullFields(copyWhere),
         skip: perPage * page,
         take: perPage,
         relations: this.relations,
