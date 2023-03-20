@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ limit: '50mb', extended: true }));
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
   console.log('The app is ready! ', await app.getUrl());
 }
 bootstrap();
