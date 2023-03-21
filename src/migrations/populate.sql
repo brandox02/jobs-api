@@ -67,9 +67,9 @@ INSERT INTO cities(name, country_id) values ('Santa Cruz de Barahona', 1);
 INSERT INTO cities(name, country_id) values ('Santiago de los Caballeros', 1);
 INSERT INTO cities(name, country_id) values ('Santo Domingo', 1);
 
-INSERT INTO educations(1, name) values (1, 'Graduado');
-INSERT INTO educations(1, name) values (2, 'Maestría');
-INSERT INTO educations(1, name) values (3, 'Doctorado');
+INSERT INTO educations(id, name) values (1, 'Graduado');
+INSERT INTO educations(id, name) values (2, 'Maestría');
+INSERT INTO educations(id, name) values (3, 'Doctorado');
 
 
 INSERT INTO application_status(id,name) VALUES (1, 'En proceso');
