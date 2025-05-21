@@ -18,13 +18,13 @@ import { ConfigService } from '@nestjs/config';
           port: +configService.get('DB_PORT'),
           synchronize: true,
           autoLoadEntities: true,
-          entities: ['dist/**/**.entity{.ts,.js}'],
-          ...(configService.get('DB_LOGGING') === 'true'
-            ? { logging: true }
-            : {}),
+          // entities: ['dist/**/**.entity{.ts,.js}'],
+          // ...(configService.get('DB_LOGGING') === 'true'
+          //   ? { logging: true }
+          //   : {}),
         };
       },
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
