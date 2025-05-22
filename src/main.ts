@@ -8,6 +8,7 @@ async function bootstrap() {
   // Enable CORS for all origins
 
   console.log("Testing cors")
+
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

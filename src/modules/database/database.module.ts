@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => {
         // const isProd = configService.get('NODE_ENV') === 'PROD';
         return {
-          poolSize: 5,
+          poolSize: 15,
           type: 'postgres',
           host: configService.get('DB_HOST'),
           database: configService.get('DB_DATABASE'),
