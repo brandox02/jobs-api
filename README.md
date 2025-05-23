@@ -1,6 +1,7 @@
 ## Jobs Api
 
-First of all you need have installed docker & nodejs. Once you have them follow the following steps to run the api:
+First of all you need have installed docker & nodejs. Once you have them follow
+the following steps to run the api:
 
 ##### Run the database container process
 
@@ -36,3 +37,5 @@ CLOUDINARY_API_SECRET=asdsdsdf
 ```bash
 npm run start:dev
 ```
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/brandox02/jobs-api)
